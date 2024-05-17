@@ -1,0 +1,51 @@
+﻿.box-container
+{
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: rgba(251, 234, 235, 0.5);
+}
+
+.box
+{
+    flex: 0 0 calc(50% - 20px);
+    overflow: hidden;
+}
+
+    .box img
+    {
+        max-width: 100%;
+        border-radius: 10px;
+    }
+
+.box-content
+{
+    padding: 0 20px;
+}
+
+.adoption-info
+{
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* background-color: rgba(47, 60, 126, 0.9); */
+    background-color: #FBEAEB;
+}
+
+    .adoption-info p
+    {
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+#adoption-count
+{
+    font-weight: bold;
+    color: #2F3C7E;
+}

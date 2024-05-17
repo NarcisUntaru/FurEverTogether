@@ -1,0 +1,22 @@
+﻿@model CatViewModel
+@using FurEver_Together.Models;
+@{
+    ViewData["Title"] = "Add cat";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+	<form id="myForm" asp-action="Add" method="post" class="needs-validation" novalidate>
+		<div class="form-group">
+			<label asp-for="Declawed"></label>
+			<input asp-for="Declawed" class="form-control" />
+			<span asp-validation-for="Declawed" class="text-danger"></span>
+		</div>
+		<button type="submit" class="btn btn-primary">Create</button>
+	</form>
+</body>
+</html>

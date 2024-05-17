@@ -1,0 +1,25 @@
+﻿@* @model CatViewModel
+@using FurEver_Together.Models;
+@{
+    ViewData["Title"] = "Edit cat";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+    <form id="myForm" asp-action="Edit" method="post" class="needs-validation" novalidate>
+        <input asp-for="Id" hidden />
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+</body>
+</html>
+ *@
