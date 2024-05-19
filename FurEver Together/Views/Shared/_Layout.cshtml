@@ -4,232 +4,39 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FurEver Together</title>
-    <link rel="icon" type="image/png" href="./uploads/Logo/Icon.png" />
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-image: url('./uploads/Cover/background.png');
-            background-size: cover;
-            background-position: center top;
-            background-repeat: no-repeat;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .navbar {
-            background-color: #2F3C7E;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            z-index: 2;
-            box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        .nav-item {
-            margin-right: 20px;
-        }
-
-            .navbar a {
-                float: left;
-                display: block;
-                color: #FBEAEB;
-                text-align: center;
-                padding: 14px 20px;
-                text-decoration: none;
-                border-radius: 20px;
-                box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.2);
-            }
-
-                .navbar a:hover {
-                    background-color: #FBEAEB;
-                    color: #2F3C7E;
-                }
-
-                .navbar a.active {
-                    background-color: #FBEAEB;
-                    color: #2F3C7E;
-                }
-
-
-        .dropdown {
-            float: left;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.2);
-            margin-right: 20px;
-        }
-
-            .dropdown:hover {
-                background-color: #FBEAEB;
-                color: #2F3C7E;
-            }
-
-            .dropdown .dropdown-btn {
-                font-size: 16px;
-                border: none;
-                outline: none;
-                color: #FBEAEB;
-                padding: 14px 20px;
-                background-color: inherit;
-                font-family: inherit;
-                margin: 0;
-                cursor: pointer;
-            }
-
-        .dropdown-btn:hover {
-            background-color: #FBEAEB;
-            color: #2F3C7E;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #2F3C7E;
-            min-width: 160px;
-            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            border-radius: 20px;
-        }
-
-            .dropdown-content a {
-                float: none;
-                color: #FBEAEB;
-                padding: 12px 16px;
-                text-decoration: none;
-                display: block;
-                text-align: left;
-            }
-
-                .dropdown-content a:hover {
-                    background-color: #FBEAEB;
-                }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-
-        .logo-container {
-            float: left;
-            padding: 10px 20px;
-        }
-
-            .logo-container img {
-                height: 50px;
-                cursor: pointer;
-            }
-
-        .auth-buttons {
-            display: flex;
-            margin-left: auto;
-            margin-right: 20px;
-            margin-top: 14px;
-        }
-
-            .auth-buttons a {
-                color: white;
-                text-decoration: none;
-                padding: 14px 20px;
-                border-radius: 20px;
-                background-color: #2F3C7E;
-                margin-left: 10px;
-            }
-
-                .auth-buttons a:hover {
-                    background-color: #FBEAEB;
-                    color: #2F3C7E;
-                }
-
-        footer {
-            background-color: #2F3C7E;
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.5);
-            margin-top: auto;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-around;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-            .footer-content div {
-                flex: 1;
-                margin-right: 20px;
-            }
-
-            .footer-content h3 {
-                font-size: 18px;
-                margin-bottom: 10px;
-            }
-
-            .footer-content ul {
-                list-style-type: none;
-                padding: 0;
-            }
-
-         .footer-content ul li {
-                    margin-bottom: 5px;
-                }
-
-                    .footer-content ul li a {
-                        color: white;
-                        text-decoration: none;
-                    }
-
-                        .footer-content ul li a:hover {
-                            text-decoration: underline;
-                        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-            .copyright p {
-                font-size: 14px;
-            }
-    </style>
+    <link rel="stylesheet" href="\css\shared.css">
+    <link rel="icon" type="image/png" href="/uploads/Logo/Icon.png" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light fixed-top">
             <div class="logo-container">
                 <a asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="./uploads/Logo/logo_wide.png" alt="FurEver Together Logo">
+                    <img src="/uploads/Logo/logo_wide.png" alt="FurEver Together Logo">
                 </a>
             </div>
             <div class="nav-item">
-                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "Home" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            </div>
-            <div class="dropdown @(ViewContext.RouteData.Values["Controller"].ToString() == "Cats" || ViewContext.RouteData.Values["Controller"].ToString() == "Dogs" ? "active" : "")">
-                <div class="dropdown-btn @(ViewContext.RouteData.Values["Controller"].ToString() == "Cats" || ViewContext.RouteData.Values["Controller"].ToString() == "Dogs" ? "active" : "")">Adopt & Rescue</div>
-                <div class="dropdown-content">
-                    <div class="nav-item">
-                        <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "Cats" ? "active" : "")" asp-area="" asp-controller="Cats" asp-action="Index">Cats</a>
-                        <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "Dogs" ? "active" : "")" asp-area="" asp-controller="Dogs" asp-action="Index">Dogs</a>
-                    </div>
-                </div>
+                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
             </div>
             <div class="nav-item">
-                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "Volunteer" ? "active" : "")" asp-area="" asp-controller="Volunteer" asp-action="Index">Volunteer</a>
+                <a class="nav-link text-dark" asp-controller="Adoptions" asp-action="Index">Adoptions</a>
             </div>
             <div class="nav-item">
-                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "ContactUs" ? "active" : "")" asp-area="" asp-controller="ContactUs" asp-action="Index">Contact Us</a>
+                <a class="nav-link text-dark" asp-controller="Volunteer" asp-action="Index">Volunteer</a>
             </div>
             <div class="nav-item">
-                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "Support" ? "active" : "")" asp-area="" asp-controller="Support" asp-action="Index">Support</a>
+                <a class="nav-link text-dark" asp-controller="ContactUs" asp-action="Index">Contact Us</a>
             </div>
             <div class="nav-item">
-                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "AboutUs" ? "active" : "")" asp-area="" asp-controller="AboutUs" asp-action="Index">About Us</a>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Support" asp-action="Index">Support</a>
             </div>
-            <div class="auth-buttons">
-                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "Login" ? "active" : "")" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
-                <a class="nav-link text-dark @(ViewContext.RouteData.Values["Controller"].ToString() == "Register" ? "active" : "")" asp-area="" asp-controller="Register" asp-action="Index">Register</a>
+            <div class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="AboutUs" asp-action="Index">About Us</a>
             </div>
+             <div class="auth-buttons"> 
+                <partial name="_LoginPartial" />
+             </div> 
+            
         </nav>
     </header>
     <div class="container">
@@ -265,5 +72,6 @@
         </div>
 
     </footer>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

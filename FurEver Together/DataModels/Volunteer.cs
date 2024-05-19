@@ -1,11 +1,12 @@
 ﻿namespace FurEver_Together.DataModels
 {
-    public partial class Volunteer : BaseModel
+    public partial class Volunteer
     {
+        public int Id { get; set; }
         public string Message { get; set; }
 
         // Navigation properties
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public User User { get; set; }
     }

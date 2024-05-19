@@ -1,13 +1,9 @@
-﻿namespace FurEver_Together.DataModels
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace FurEver_Together.DataModels
 {
-    public partial class User : BaseModel
+    public partial class User : IdentityUser
     {
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
 
         // Navigation properties
         public ICollection<Adoption> Adoptions { get; set; }

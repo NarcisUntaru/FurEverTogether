@@ -9,6 +9,9 @@ using FurEver_Together.Models;
 using FurEver_Together.DataModels;
 using AutoMapper;
 using FurEver_Together.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Diagnostics;
 
 namespace FurEver_Together.Controllers
 {
@@ -16,18 +19,18 @@ namespace FurEver_Together.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IVolunteerRepository _VolunteerRepository;
+        private readonly IUserRepository _UserRepository;
 
-        public VolunteerController(IMapper mapper, IVolunteerRepository VolunteerRepository)
+        public VolunteerController(IMapper mapper, IVolunteerRepository VolunteerRepository, IUserRepository UserRepository)
         {
             _mapper = mapper;
             _VolunteerRepository = VolunteerRepository;
+            _UserRepository = UserRepository;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
-            var Volunteer = _VolunteerRepository.GetAll();
-            var VolunteerModels = _mapper.Map<List<VolunteerViewModel>>(Volunteer);
-            return View(VolunteerModels);
+            return View();
         }
 
         [HttpPost]
@@ -35,36 +38,20 @@ namespace FurEver_Together.Controllers
         {
             if (ModelState.IsValid)
             {
-                _VolunteerRepository.Add(_mapper.Map<Volunteer>(VolunteerViewModel));
+                string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var volunteer = _mapper.Map<Volunteer>(VolunteerViewModel);
+                volunteer.UserId = currentUserId;
+                _VolunteerRepository.Add(volunteer);
                 _VolunteerRepository.Save();
+                return RedirectToAction("Index");
             }
             return View();
         }
 
-        public IActionResult Edit(int VolunteerId)
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            var Volunteer = _VolunteerRepository.GetById(VolunteerId);
-            return View(_mapper.Map<VolunteerViewModel>(Volunteer));
-        }
-
-        [HttpPost]
-        public IActionResult Edit(VolunteerViewModel? VolunteerViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                _VolunteerRepository.Update(_mapper.Map<Volunteer>(VolunteerViewModel));
-                _VolunteerRepository.Save();
-                return RedirectToAction("Index");
-            }
-            return View(VolunteerViewModel);
-        }
-
-        public IActionResult Delete(int VolunteerId)
-        {
-            var Volunteer = _VolunteerRepository.GetById(VolunteerId);
-            _VolunteerRepository.Delete(Volunteer);
-            _VolunteerRepository.Save();
-            return RedirectToAction("Index");
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

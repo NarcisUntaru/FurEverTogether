@@ -1,8 +1,9 @@
 ﻿using FurEver_Together.DataModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace FurEver_Together.Models
 {
-    public class UserViewModel
+    public class UserViewModel : IdentityUser
     {
         public int Id { get; set; }
         public string Username { get; set; }

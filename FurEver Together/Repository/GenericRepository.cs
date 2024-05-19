@@ -4,7 +4,7 @@ using FurEver_Together.Models;
 
 namespace FurEver_Together.Repository
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseModel
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly FurEverTogetherDbContext dbContext;
 

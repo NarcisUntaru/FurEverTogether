@@ -1,7 +1,8 @@
 ﻿namespace FurEver_Together.DataModels
 {
-    public partial class Dog : BaseModel
+    public partial class Dog
     {
+        public int Id { get; set; }
         public string Size { get; set; }
         public bool Trained { get; set; }
 

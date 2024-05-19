@@ -1,7 +1,8 @@
 ﻿namespace FurEver_Together.DataModels
 {
-    public partial class Adoption : BaseModel
+    public partial class Adoption
     {
+        public int Id { get; set; }
         public string AnimalType { get; set; }
         public string Breed { get; set; }
         public string Age { get; set; }
@@ -10,7 +11,7 @@
         public string Description { get; set; }
 
         // Navigation properties
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public User User { get; set; }
 

@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using FurEver_Together.DataModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace FurEver_Together.Models;
 
-public partial class FurEverTogetherDbContext : DbContext
+public partial class FurEverTogetherDbContext : IdentityDbContext<User>
 {
     public FurEverTogetherDbContext()
     {
@@ -16,19 +18,17 @@ public partial class FurEverTogetherDbContext : DbContext
 
     public virtual DbSet<Cat> Cats { get; set; }
     public virtual DbSet<Adoption> Adoptions { get; set; }
-
     public virtual DbSet<ContactUs> ContactUs { get; set; }
     public virtual DbSet<Dog> Dogs { get; set; }
-    public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Volunteer> Volunteers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
      => optionsBuilder.UseSqlServer("Name=ConnectionStrings:FurEverTogetherDb");
 
-    public DbSet<FurEver_Together.Models.DogViewModel> DogViewModel { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Adoption>()
             .HasOne(a => a.User)
             .WithMany(u => u.Adoptions)
