@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FurEver_Together.Models
 {
-    public class UserViewModel : IdentityUser
+    public class UserViewModel
     {
         public int Id { get; set; }
         public string Username { get; set; }
