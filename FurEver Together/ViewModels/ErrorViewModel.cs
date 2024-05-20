@@ -1,4 +1,4 @@
-namespace FurEver_Together.Models
+namespace FurEver_Together.ViewModels
 {
     public class ErrorViewModel
     {

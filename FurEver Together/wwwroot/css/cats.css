@@ -1,69 +1,81 @@
-﻿.card
+﻿.pet-details-container
 {
-    position: relative;
-    width: 300px;
-    height: 200px;
-    background: linear-gradient(-45deg, #FBEAEB 0%, #2F3C7E 100% );
-    border-radius: 10px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-}
-
-    .card svg
-    {
-        width: 48px;
-        fill: #333;
-        transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-    }
-
-    .card:hover
-    {
-        transform: rotate(-5deg) scale(1.1);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-
-.card__content
-{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    width: 100%;
-    height: 100%;
+    background-color: rgba(251, 234, 235, 0.5); /* Adjust opacity as needed */
     padding: 20px;
-    box-sizing: border-box;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+    max-width: 800px; /* Set the maximum width */
+    margin: 100px auto; /* Add space between the container and the navbar/footer */
+
+}
+    .pet-details-container h2
+    {
+        font-size: 30px; /* Increase font size */
+        font-weight: bold; /* Make it bold */
+        color: #2F3C7E; /* Change color */
+    }
+    .pet-details-container .image-container
+    {
+        margin-top: 50px;
+    }
+
+        .pet-details-container .image-container img
+        {
+            max-width: 200px;
+            height: auto;
+            border-radius: 10px; /* Add rounded corners to the image */
+        }
+
+    .pet-details-container .details
+    {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .pet-details-container button
+    {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .pet-details-container button:hover
+        {
+            background-color: #45a049;
+        }
+button
+{
+    padding: 1.3em 3em;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
     background-color: #fff;
-    opacity: 0;
-    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
 }
 
-.card:hover .card__content
-{
-    transform: translate(-50%, -50%) rotate(0deg);
-    opacity: 1;
-}
+    button:hover
+    {
+        background-color: #23c483;
+        box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+        color: #fff;
+        transform: translateY(-7px);
+    }
 
-.card__title
-{
-    margin: 0;
-    font-size: 24px;
-    color: #333;
-    font-weight: 700;
-}
-
-.card__description
-{
-    margin: 10px 0 0;
-    font-size: 14px;
-    color: #777;
-    line-height: 1.4;
-}
-
-.card:hover svg
-{
-    scale: 0;
-    transform: rotate(-45deg);
-}
+    button:active
+    {
+        transform: translateY(-1px);
+    }

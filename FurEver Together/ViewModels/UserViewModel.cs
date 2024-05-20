@@ -1,7 +1,7 @@
 ﻿using FurEver_Together.DataModels;
 using Microsoft.AspNetCore.Identity;
 
-namespace FurEver_Together.Models
+namespace FurEver_Together.ViewModels
 {
     public class UserViewModel
     {

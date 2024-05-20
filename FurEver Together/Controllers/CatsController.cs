@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FurEver_Together.Models;
+using FurEver_Together.ViewModels;
 using FurEver_Together.DataModels;
 using AutoMapper;
-using FurEver_Together.Interfaces;
+using FurEver_Together.Repository.Interfaces;
 
 namespace FurEver_Together.Controllers
 {

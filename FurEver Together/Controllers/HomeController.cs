@@ -1,4 +1,4 @@
-using FurEver_Together.Models;
+using FurEver_Together.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

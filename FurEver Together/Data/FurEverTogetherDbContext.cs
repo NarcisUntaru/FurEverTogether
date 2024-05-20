@@ -3,7 +3,7 @@ using FurEver_Together.DataModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
-namespace FurEver_Together.Models;
+namespace FurEver_Together.Data;
 
 public partial class FurEverTogetherDbContext : IdentityDbContext<User>
 {

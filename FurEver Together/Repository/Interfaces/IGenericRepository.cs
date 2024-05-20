@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace FurEver_Together.Interfaces
+namespace FurEver_Together.Repository.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
