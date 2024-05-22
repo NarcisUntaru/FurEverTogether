@@ -32,7 +32,7 @@ namespace FurEver_Together.Controllers
             return View(adoptions);
         }
 
-        // GET: Adoptions/Details/5
+        // GET: Adoptions/Details/
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
