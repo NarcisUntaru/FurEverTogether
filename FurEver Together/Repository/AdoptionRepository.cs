@@ -8,6 +8,11 @@ namespace FurEver_Together.Repository
     {
         public AdoptionRepository(FurEverTogetherDbContext dbContext) : base(dbContext)
         {
+            
+        }
+        public async Task<Adoption> FindByIdAsync(int id)
+        {
+            return await dbContext.Adoptions.FindAsync(id);
         }
     }
 }

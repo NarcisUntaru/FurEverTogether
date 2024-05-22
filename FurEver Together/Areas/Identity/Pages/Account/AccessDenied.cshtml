@@ -4,7 +4,25 @@
     ViewData["Title"] = "Access denied";
 }
 
-<header>
+<style>
+    .custom-container
+    {
+        width: 300px; /* Adjust width as needed */
+        height: 200px; /* Adjust height as needed */
+        background-color: red;
+        color: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        border-radius: 10px;
+    }
+</style>
+
+<header class="custom-container">
     <h1 class="text-danger">@ViewData["Title"]</h1>
     <p class="text-danger">You do not have access to this resource.</p>
 </header>

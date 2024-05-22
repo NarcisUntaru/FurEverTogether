@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using FurEver_Together.ViewModels;
 using FurEver_Together.DataModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using FurEver_Together.Services.Interfaces;
 using System.Security.Claims;
-using FurEver_Together.Repository.Interfaces;
 
 namespace FurEver_Together.Controllers
 {
     public class ContactUsController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IContactUsRepository _ContactUsRepository;
-        private readonly IUserRepository _UserRepository;
+        private readonly IContactUsService _contactUsService;
 
-        public ContactUsController(IMapper mapper, IContactUsRepository ContactUsRepository, IUserRepository userRepository)
+        public ContactUsController(IMapper mapper, IContactUsService contactUsService)
         {
             _mapper = mapper;
-            _ContactUsRepository = ContactUsRepository;
-            _UserRepository = userRepository;
+            _contactUsService = contactUsService;
         }
+
         [Authorize]
         public IActionResult Index()
         {
@@ -33,20 +26,17 @@ namespace FurEver_Together.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(ContactUsViewModel ContactUsViewModel)
+        [Authorize]
+        public IActionResult Add(ContactUsViewModel contactUsViewModel)
         {
             if (ModelState.IsValid)
             {
-                string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var contactUs = _mapper.Map<ContactUs>(ContactUsViewModel);
-
-                contactUs.UserId = currentUserId;
-                _ContactUsRepository.Add(contactUs);
-                _ContactUsRepository.Save();
+                var contactUs = _mapper.Map<ContactUs>(contactUsViewModel);
+                contactUs.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _contactUsService.Add(contactUs);
                 return RedirectToAction("Index");
             }
-
-            return View(ContactUsViewModel);
+            return View(contactUsViewModel);
         }
     }
 }

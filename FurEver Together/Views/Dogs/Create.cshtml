@@ -1,21 +1,26 @@
-﻿@model FurEver_Together.DataModels.Adoption
+﻿@model FurEver_Together.ViewModels.DogViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Add Dog</title>
+    <link rel="stylesheet" href="/css/create.css" />
+</head>
 
-@{
-    ViewData["Title"] = "Add";
-}
+<body>
 
-<h1>Add</h1>
-
-<h4>Adoption</h4>
-<hr />
+    <div class="form-container">
+        <h1 class="form-heading">Create</h1>
+        <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Add">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="AnimalType" class="control-label"></label>
-                <input asp-for="AnimalType" class="form-control" />
-                <span asp-validation-for="AnimalType" class="text-danger"></span>
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Breed" class="control-label"></label>
@@ -43,18 +48,14 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+                <label asp-for="Size" class="control-label"></label>
+                <input asp-for="Size" class="form-control" />
+                <span asp-validation-for="Size" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CatId" class="control-label"></label>
-                <input asp-for="CatId" class="form-control" />
-                <span asp-validation-for="CatId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DogId" class="control-label"></label>
-                <input asp-for="DogId" class="form-control" />
-                <span asp-validation-for="DogId" class="text-danger"></span>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Trained" /> @Html.DisplayNameFor(model => model.Trained)
+                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -70,3 +71,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+</body>
+</html>

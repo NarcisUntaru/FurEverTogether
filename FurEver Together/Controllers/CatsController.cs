@@ -1,77 +1,182 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using FurEver_Together.Services.Interfaces;
+using FurEver_Together.DataModels;
 using Microsoft.EntityFrameworkCore;
 using FurEver_Together.ViewModels;
-using FurEver_Together.DataModels;
-using AutoMapper;
-using FurEver_Together.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FurEver_Together.Controllers
 {
     public class CatsController : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly ICatRepository _catRepository;
+        private readonly ICatService _catService;
 
-        public CatsController(IMapper mapper, ICatRepository catRepository)
+        public CatsController(ICatService catService)
         {
-            _mapper = mapper;
-            _catRepository = catRepository;
+            _catService = catService;
+        }
+        
+        // GET: Cats
+        public async Task<IActionResult> Index()
+        {
+            var cats = await _catService.GetAllCatsAsync();
+            return View(cats);
         }
 
-        public IActionResult Index()
+        // GET: Cats/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var Cats = _catRepository.GetAll();
-            var CatModels = _mapper.Map<List<CatViewModel>>(Cats);
-            return View(CatModels);
-        }
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        [HttpGet]
-        public IActionResult Add()
+            var cat = await _catService.GetCatByIdAsync(id.Value);
+            if (cat == null)
+            {
+                return NotFound();
+            }
+
+            return View(cat);
+        }
+        [Authorize(Roles = "Administrator")]
+        // GET: Cats/Create
+        public IActionResult Create()
         {
             return View();
         }
 
+        // POST: Cats/Create
         [HttpPost]
-        public IActionResult Add(CatViewModel CatViewModel)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CatViewModel catViewModel)
         {
             if (ModelState.IsValid)
             {
-                _catRepository.Add(_mapper.Map<Cat>(CatViewModel));
-                _catRepository.Save();
-                return RedirectToAction("Index");
-            }
-            return View(CatViewModel);
-        }
+                var cat = new Cat
+                {
+                    Name = catViewModel.Name,
+                    Breed = catViewModel.Breed,
+                    Age = catViewModel.Age,
+                    Gender = catViewModel.Gender,
+                    ImageURL = catViewModel.ImageURL,
+                    Description = catViewModel.Description,
+                    Declawed = catViewModel.Declawed,
+                    Vaccinated = catViewModel.Vaccinated,
+                };
 
-        public IActionResult Edit(int CatId)
+                await _catService.AddCatAsync(cat);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(catViewModel);
+        }
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            var Cat = _catRepository.GetById(CatId);
-            return View(_mapper.Map<CatViewModel>(Cat));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var cat = await _catService.GetCatByIdAsync(id.Value);
+            if (cat == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new CatViewModel
+            {
+                Id = cat.Id,
+                Name = cat.Name,
+                Breed = cat.Breed,
+                Age = cat.Age,
+                Gender = cat.Gender,
+                ImageURL = cat.ImageURL,
+                Description = cat.Description,
+                Declawed = cat.Declawed,
+                Vaccinated = cat.Vaccinated
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Edit(CatViewModel? CatViewModel)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CatViewModel viewModel)
         {
+            if (id != viewModel.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                _catRepository.Update(_mapper.Map<Cat>(CatViewModel));
-                _catRepository.Save();
-                return RedirectToAction("Index");
+                var cat = await _catService.GetCatByIdAsync(id);
+                if (cat == null)
+                {
+                    return NotFound();
+                }
+
+                cat.Name = viewModel.Name;
+                cat.Breed = viewModel.Breed;
+                cat.Age = viewModel.Age;
+                cat.Gender = viewModel.Gender;
+                cat.ImageURL = viewModel.ImageURL;
+                cat.Description = viewModel.Description;
+                cat.Declawed = viewModel.Declawed;
+                cat.Vaccinated = viewModel.Vaccinated;
+
+                try
+                {
+                    await _catService.UpdateCatAsync(cat);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await CatExists(cat.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
             }
-            return View(CatViewModel);
+            return View(viewModel);
+        }
+        [Authorize(Roles = "Administrator")]
+        // GET: Cats/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var cat = await _catService.GetCatByIdAsync(id.Value);
+            if (cat == null)
+            {
+                return NotFound();
+            }
+
+            return View(cat);
+        }
+        [Authorize(Roles = "Administrator")]
+        // POST: Cats/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _catService.DeleteCatAsync(id);
+            return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int CatId)
+        private async Task<bool> CatExists(int id)
         {
-            var Cat = _catRepository.GetById(CatId);
-            _catRepository.Delete(Cat);
-            _catRepository.Save();
-            return RedirectToAction("Index");
+            var cat = await _catService.GetCatByIdAsync(id);
+            return cat != null;
         }
     }
 }

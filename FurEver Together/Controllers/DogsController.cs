@@ -5,74 +5,184 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FurEver_Together.ViewModels;
+using FurEver_Together.Data;
 using FurEver_Together.DataModels;
-using AutoMapper;
-using FurEver_Together.Repository.Interfaces;
+using FurEver_Together.ViewModels;
+using FurEver_Together.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FurEver_Together.Controllers
 {
     public class DogsController : Controller
     {
-        private readonly IMapper _mapper;
-        private readonly IDogRepository _DogRepository;
+        private readonly IDogService _dogService;
 
-        public DogsController(IMapper mapper, IDogRepository DogRepository)
+        public DogsController(IDogService dogService)
         {
-            _mapper = mapper;
-            _DogRepository = DogRepository;
+            _dogService = dogService;
         }
 
-        public IActionResult Index()
+        // GET: Dogs
+        public async Task<IActionResult> Index()
         {
-            var Dogs = _DogRepository.GetAll();
-            var DogModels = _mapper.Map<List<DogViewModel>>(Dogs);
-            return View(DogModels);
+            var dogs = await _dogService.GetAllDogsAsync();
+            return View(dogs);
         }
 
-        [HttpGet]
-        public IActionResult Add()
+        // GET: Dogs/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dog = await _dogService.GetDogByIdAsync(id.Value);
+            if (dog == null)
+            {
+                return NotFound();
+            }
+
+            return View(dog);
+        }
+        [Authorize(Roles = "Administrator")]
+        // GET: Dogs/Create
+        public IActionResult Create()
         {
             return View();
         }
 
+        // POST: Dogs/Create
         [HttpPost]
-        public IActionResult Add(DogViewModel DogViewModel)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(DogViewModel dogViewModel)
         {
             if (ModelState.IsValid)
             {
-                _DogRepository.Add(_mapper.Map<Dog>(DogViewModel));
-                _DogRepository.Save();
-                return RedirectToAction("Index");
-            }
-            return View(DogViewModel);
-        }
+                var dog = new Dog
+                {
+                    Name = dogViewModel.Name,
+                    Breed = dogViewModel.Breed,
+                    Age = dogViewModel.Age,
+                    Gender = dogViewModel.Gender,
+                    ImageURL = dogViewModel.ImageURL,
+                    Description = dogViewModel.Description,
+                    Size = dogViewModel.Size,
+                    Trained = dogViewModel.Trained
+                };
 
-        [HttpGet]
-        public IActionResult Edit(int DogId)
+                await _dogService.AddDogAsync(dog);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(dogViewModel);
+        }
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            var Dog = _DogRepository.GetById(DogId);
-            return View(_mapper.Map<DogViewModel>(Dog));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dog = await _dogService.GetDogByIdAsync(id.Value);
+            if (dog == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new DogViewModel
+            {
+                Id = dog.Id,
+                Name = dog.Name,
+                Breed = dog.Breed,
+                Age = dog.Age,
+                Gender = dog.Gender,
+                ImageURL = dog.ImageURL,
+                Description = dog.Description,
+                Size = dog.Size,
+                Trained = dog.Trained
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Edit(DogViewModel DogViewModel)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, DogViewModel viewModel)
         {
+            if (id != viewModel.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                _DogRepository.Update(_mapper.Map<Dog>(DogViewModel));
-                _DogRepository.Save();
-                return RedirectToAction("Index");
+                var dog = await _dogService.GetDogByIdAsync(id);
+                if (dog == null)
+                {
+                    return NotFound();
+                }
+
+                // Map ViewModel to Model
+                dog.Name = viewModel.Name;
+                dog.Breed = viewModel.Breed;
+                dog.Age = viewModel.Age;
+                dog.Gender = viewModel.Gender;
+                dog.ImageURL = viewModel.ImageURL;
+                dog.Description = viewModel.Description;
+                dog.Size = viewModel.Size;
+                dog.Trained = viewModel.Trained;
+
+                try
+                {
+                    await _dogService.UpdateDogAsync(dog);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await DogExists(dog.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
             }
-            return View(DogViewModel);
+            return View(viewModel);
+        }
+        [Authorize(Roles = "Administrator")]
+        // GET: Dogs/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dog = await _dogService.GetDogByIdAsync(id.Value);
+            if (dog == null)
+            {
+                return NotFound();
+            }
+
+            return View(dog);
+        }
+        [Authorize(Roles = "Administrator")]
+        // POST: Dogs/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _dogService.DeleteDogAsync(id);
+            return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int DogId)
+        private async Task<bool> DogExists(int id)
         {
-            var Dog = _DogRepository.GetById(DogId);
-            _DogRepository.Delete(Dog);
-            _DogRepository.Save();
-            return RedirectToAction("Index");
+            var dog = await _dogService.GetDogByIdAsync(id);
+            return dog != null;
         }
     }
 }

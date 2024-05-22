@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<FurEver_Together.DataModels.Dog>
+
+@{
     ViewData["Title"] = "Dogs";
 }
 <!DOCTYPE html>
@@ -7,76 +9,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href=".\css\dogs.css">
-    <title>About Us</title>
+    <title>@ViewData["Title"]</title>
+    <script>
+        function handleImageError(image) {
+            image.style.display = 'none';
+            var noImageText = document.createElement('p');
+            noImageText.textContent = 'No Image';
+            noImageText.className = 'no-image-text';
+            image.parentNode.appendChild(noImageText);
+        }
+    </script>
+    <style>
+        .no-image-text
+        {
+            text-align: center;
+            font-size: 16px;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
+    <form action="@Url.Action("Create", "Dogs")" method="get">
+        <button type="submit">Add Dog</button>
+    </form>
     <div class="flip-card-container">
-        <div class="flip-card">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <p class="title">No Image</p>
+        @foreach (var dog in Model)
+        {
+            <div class="flip-card">
+                <a href="@Url.Action("Details", "Dogs", new { id = dog.Id })" class="flip-card-link">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="@dog.ImageURL" alt="No Image" class="dog-image" onerror="handleImageError(this)" />
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="title">@dog.Name</p>
+                            <p>@dog.Age years old</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-            <div class="flip-card-back">
-                <p class="title">Name</p>
-                <p>Age</p>
-            </div>
-        </div>
-        </div>
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <p class="title">No Image</p>
-                </div>
-                <div class="flip-card-back">
-                    <p class="title">Name</p>
-                    <p>Age</p>
-                </div>
-            </div>
-        </div>
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <p class="title">No Image</p>
-                </div>
-                <div class="flip-card-back">
-                    <p class="title">Name</p>
-                    <p>Age</p>
-                </div>
-            </div>
-        </div>
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <p class="title">No Image</p>
-                </div>
-                <div class="flip-card-back">
-                    <p class="title">Name</p>
-                    <p>Age</p>
-                </div>
-            </div>
-        </div>
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <p class="title">No Image</p>
-                </div>
-                <div class="flip-card-back">
-                    <p class="title">Name</p>
-                    <p>Age</p>
-                </div>
-            </div>
-        </div>
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <p class="title">No Image</p>
-                </div>
-                <div class="flip-card-back">
-                    <p class="title">Name</p>
-                    <p>Age</p>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </body>
 </html>

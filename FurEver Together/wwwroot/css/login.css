@@ -1,4 +1,5 @@
-﻿.register-container
+﻿
+.register-container
 {
     max-width: 350px;
     background: #FBEAEB;
@@ -9,6 +10,7 @@
     margin: 20px;
     margin-left: auto;
     margin-right: auto;
+    margin: 60px auto 20px auto;
 }
 
 .heading
@@ -158,3 +160,8 @@
         color: #0099ff;
         font-size: 9px;
     }
+.checkbox
+{
+    color: #2F3C7E;
+    margin-top: 15px;
+}

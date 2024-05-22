@@ -4,4 +4,5 @@ namespace FurEver_Together.Repository.Interfaces;
 
 public interface IContactUsRepository : IGenericRepository<ContactUs>
 {
+
 }

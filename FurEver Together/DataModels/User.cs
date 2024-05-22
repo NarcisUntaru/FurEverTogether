@@ -6,7 +6,9 @@ namespace FurEver_Together.DataModels
     {
 
         // Navigation properties
-        public ICollection<Adoption> Adoptions { get; set; }
+        public int? AdoptionId { get; set; }
+
+        public Adoption Adoption { get; set; }
 
         public ICollection<ContactUs> ContactMessages { get; set; }
         public Volunteer Volunteer { get; set; }

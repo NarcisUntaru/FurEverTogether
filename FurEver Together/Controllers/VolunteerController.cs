@@ -1,32 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using FurEver_Together.ViewModels;
 using FurEver_Together.DataModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using FurEver_Together.Services.Interfaces;
 using System.Security.Claims;
-using System.Diagnostics;
-using FurEver_Together.Repository.Interfaces;
 
 namespace FurEver_Together.Controllers
 {
     public class VolunteerController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IVolunteerRepository _VolunteerRepository;
-        private readonly IUserRepository _UserRepository;
+        private readonly IVolunteerService _volunteerService;
 
-        public VolunteerController(IMapper mapper, IVolunteerRepository VolunteerRepository, IUserRepository UserRepository)
+        public VolunteerController(IMapper mapper, IVolunteerService volunteerService)
         {
             _mapper = mapper;
-            _VolunteerRepository = VolunteerRepository;
-            _UserRepository = UserRepository;
+            _volunteerService = volunteerService;
         }
+
         [Authorize]
         public IActionResult Index()
         {
@@ -34,24 +26,17 @@ namespace FurEver_Together.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(VolunteerViewModel VolunteerViewModel)
+        [Authorize]
+        public IActionResult Add(VolunteerViewModel volunteerViewModel)
         {
             if (ModelState.IsValid)
             {
-                string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                var volunteer = _mapper.Map<Volunteer>(VolunteerViewModel);
-                volunteer.UserId = currentUserId;
-                _VolunteerRepository.Add(volunteer);
-                _VolunteerRepository.Save();
+                var volunteer = _mapper.Map<Volunteer>(volunteerViewModel);
+                volunteer.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                _volunteerService.Add(volunteer);
                 return RedirectToAction("Index");
             }
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(volunteerViewModel);
         }
     }
 }

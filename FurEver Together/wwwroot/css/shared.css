@@ -138,3 +138,23 @@ footer
                 {
                     text-decoration: underline;
                 }
+#logout
+{
+    display: block;
+    color: white;
+    font-size: 14px;
+    padding: 14px 20px;
+    border-radius: 20px;
+    background-color: #2F3C7E;
+    margin-left: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+    #logout:hover
+    {
+        background-color: #FBEAEB;
+        color: #2F3C7E;
+    }

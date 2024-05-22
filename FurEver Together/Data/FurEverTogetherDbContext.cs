@@ -2,6 +2,7 @@
 using FurEver_Together.DataModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using FurEver_Together.ViewModels;
 
 namespace FurEver_Together.Data;
 
@@ -29,10 +30,12 @@ public partial class FurEverTogetherDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Adoption>()
-            .HasOne(a => a.User)
-            .WithMany(u => u.Adoptions)
-            .HasForeignKey(a => a.UserId);
+
+
+        modelBuilder.Entity<User>()
+        .HasOne(u => u.Adoption)
+        .WithOne(a => a.User)
+        .HasForeignKey<User>(u => u.AdoptionId);
 
         modelBuilder.Entity<ContactUs>()
             .HasOne(c => c.User)
@@ -46,14 +49,28 @@ public partial class FurEverTogetherDbContext : IdentityDbContext<User>
             .HasForeignKey<Volunteer>(v => v.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Adoption>()
-            .HasOne(a => a.Cat)
-            .WithOne(c => c.Adoption)
-            .HasForeignKey<Cat>(c => c.Id);
+        //modelBuilder.Entity<Adoption>()
+        //    .HasOne(a => a.Cat)
+        //    .WithOne(c => c.Adoption)
+        //    .HasForeignKey<Cat>(c => c.Id);
 
-        modelBuilder.Entity<Adoption>()
-            .HasOne(a => a.Dog)
-            .WithOne(d => d.Adoption)
-            .HasForeignKey<Dog>(d => d.Id);
+        //modelBuilder.Entity<Adoption>()
+        //    .HasOne(a => a.Dog)
+        //    .WithOne(d => d.Adoption)
+        //    .HasForeignKey<Dog>(d => d.Id);
+
+        modelBuilder.Entity<Cat>()
+        .HasOne(c => c.Adoption)
+        .WithOne(a => a.Cat)
+        .HasForeignKey<Adoption>(a => a.CatId)
+        .IsRequired(false);
+
+        modelBuilder.Entity<Dog>()
+        .HasOne(c => c.Adoption)
+        .WithOne(a => a.Dog)
+        .HasForeignKey<Adoption>(a => a.DogId)
+        .IsRequired(false);
     }
+
+
 }

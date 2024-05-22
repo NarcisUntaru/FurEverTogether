@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using FurEver_Together.DataModels;
 using FurEver_Together.Data;
 using FurEver_Together.Repository.Interfaces;
+using FurEver_Together.Services.Interfaces;
+using FurEver_Together.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +20,28 @@ builder.Services.AddDbContext<FurEverTogetherDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FurEverTogetherDb")));
 
 
-builder.Services.AddScoped(typeof(IAdoptionRepository), typeof(AdoptionRepository));
-builder.Services.AddScoped(typeof(ICatRepository), typeof(CatRepository));
-builder.Services.AddScoped(typeof(IContactUsRepository), typeof(ContactUsRepository));
-builder.Services.AddScoped(typeof(IDogRepository), typeof(DogRepository));
-builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
-builder.Services.AddScoped(typeof(IVolunteerRepository), typeof(VolunteerRepository));
+
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+
+
+builder.Services.AddScoped<IAdoptionRepository, AdoptionRepository>();
+builder.Services.AddScoped<IAdoptionService, AdoptionService>();
+
+builder.Services.AddScoped<ICatRepository, CatRepository>();
+builder.Services.AddScoped<ICatService, CatService>();
+
+builder.Services.AddScoped<IContactUsRepository, ContactUsRepository>();
+builder.Services.AddScoped<IContactUsService, ContactUsService>();
+
+builder.Services.AddScoped<IDogRepository, DogRepository>();
+builder.Services.AddScoped<IDogService, DogService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IVolunteerRepository, VolunteerRepository>();
+builder.Services.AddScoped<IVolunteerService, VolunteerService>();
+
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

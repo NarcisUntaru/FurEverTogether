@@ -1,0 +1,58 @@
+﻿@model FurEver_Together.DataModels.Dog
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Details</title>
+    <link rel="stylesheet" href="/css/cats.css">
+</head>
+<body>
+    <div class="pet-details-container">
+        <h2>@Html.DisplayFor(model => model.Name)</h2>
+        <div class="image-container">
+            @{
+                var imageUrl = Model.ImageURL;
+                if (string.IsNullOrEmpty(imageUrl))
+                {
+                    imageUrl = "https://via.placeholder.com/250x300"; // Placeholder image URL
+                }
+            }
+            <img id="dogImage" src="@imageUrl" alt="Dog Image" onerror="handleImageError()">
+        </div>
+        <div class="details">
+            <p><strong>Breed:</strong></p>
+            @Html.DisplayFor(model => model.Breed)
+            <p><strong>Description:</strong></p>
+            @Html.DisplayFor(model => model.Description)
+            <p><strong>Age:</strong></p>
+            @Html.DisplayFor(model => model.Age)
+            <p><strong>Gender:</strong></p>
+            @Html.DisplayFor(model => model.Gender)
+            <p><strong>Size:</strong></p>
+            @Html.DisplayFor(model => model.Size)
+            <p><strong>Trained:</strong></p>
+            @Html.DisplayFor(model => model.Trained)
+            <div>
+            <button>
+                <a href="/Dogs/Edit/@Model.Id" class="btn btn-primary btn-custom ">Edit</a>
+            </button>
+            <button>
+                <a href="/Dogs/Delete/@Model.Id" class="btn btn-danger btn-custom">Delete</a>
+            </button>
+            </div>
+            <div>
+                <button>Adopt</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleImageError() {
+            var placeholderUrl = "https://via.placeholder.com/250x300";
+            var imageElement = document.getElementById('dogImage');
+            imageElement.src = placeholderUrl;
+        }
+    </script>
+</body>
+</html>

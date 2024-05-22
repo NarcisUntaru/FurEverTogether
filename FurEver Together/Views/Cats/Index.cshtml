@@ -1,26 +1,54 @@
-﻿<!DOCTYPE html>
+﻿@model IEnumerable<FurEver_Together.DataModels.Cat>
+
+@{
+    ViewData["Title"] = "Cats";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pet Details</title>
-    <link rel="stylesheet" href="./css/cats.css">
+    <link rel="stylesheet" href=".\css\dogs.css">
+    <title>@ViewData["Title"]</title>
+    <script>
+        function handleImageError(image) {
+            image.style.display = 'none';
+            var noImageText = document.createElement('p');
+            noImageText.textContent = 'No Image';
+            noImageText.className = 'no-image-text';
+            image.parentNode.appendChild(noImageText);
+        }
+    </script>
+    <style>
+        .no-image-text
+        {
+            text-align: center;
+            font-size: 16px;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
-    <div class="pet-details-container">
-        <h2>Name</h2>
-        <div class="image-container">
-            <img src="https://via.placeholder.com/200x300" alt="Placeholder Image">
-        </div>
-        <div class="details">
-            <p>Breed:</p>
-            <p>Description:</p>
-            <p>Age:</p>
-            <p>Gender:</p>
-            <p>Declawed:</p>
-            <p>Vaccinated:</p>
-            <button>Adopt</button>
-        </div>
+    <form action="@Url.Action("Create", "Cats")" method="get">
+        <button type="submit">Add Cat</button>
+    </form>
+    <div class="flip-card-container">
+        @foreach (var cat in Model)
+        {
+            <div class="flip-card">
+                <a href="@Url.Action("Details", "Cats", new { id = cat.Id })" class="flip-card-link">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img src="@cat.ImageURL" alt="No Image" class="dog-image" onerror="handleImageError(this)" />
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="title">@cat.Name</p>
+                            <p>@cat.Age years old</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
     </div>
 </body>
 </html>

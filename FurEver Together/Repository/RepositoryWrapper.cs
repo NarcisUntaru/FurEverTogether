@@ -1,5 +1,7 @@
 ﻿using FurEver_Together.Data;
+using FurEver_Together.DataModels;
 using FurEver_Together.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FurEver_Together.Repository;
 
@@ -15,30 +17,79 @@ public class RepositoryWrapper : IRepositoryWrapper
 
     public IAdoptionRepository AdoptionRepository
     {
-        get { return _adoptionRepository ??= new AdoptionRepository(_furEverTogetherDbContext); }
+        get
+        {
+            if (_adoptionRepository == null)
+            {
+                _adoptionRepository = new AdoptionRepository(_furEverTogetherDbContext);
+            }
+
+            return _adoptionRepository;
+        }
     }
 
     public ICatRepository CatRepository
     {
-        get { return _catRepository ??= new CatRepository(_furEverTogetherDbContext); }
+        get
+        {
+            if (_catRepository == null)
+            {
+                _catRepository = new CatRepository(_furEverTogetherDbContext);
+            }
+
+            return _catRepository;
+        }
     }
 
     public IContactUsRepository ContactUsRepository
     {
-        get { return _contactUsRepository ??= new ContactUsRepository(_furEverTogetherDbContext); }
+        get
+        {
+            if (_contactUsRepository == null)
+            {
+                _contactUsRepository = new ContactUsRepository(_furEverTogetherDbContext);
+            }
+
+            return _contactUsRepository;
+        }
     }
+
     public IDogRepository DogRepository
     {
-        get { return _dogRepository ??= new DogRepository(_furEverTogetherDbContext); }
+        get
+        {
+            if (_dogRepository == null)
+            {
+                _dogRepository = new DogRepository(_furEverTogetherDbContext);
+            }
+
+            return _dogRepository;
+        }
     }
 
     public IUserRepository UserRepository
     {
-        get { return _userRepository ??= new UserRepository(_furEverTogetherDbContext); }
+        get
+        {
+            if (_userRepository == null)
+            {
+                _userRepository = new UserRepository(_furEverTogetherDbContext);
+            }
+
+            return _userRepository;
+        }
     }
     public IVolunteerRepository VolunteerRepository
     {
-        get { return _volunteerRepository ??= new VolunteerRepository(_furEverTogetherDbContext); }
+        get
+        {
+            if (_volunteerRepository == null)
+            {
+                _volunteerRepository = new VolunteerRepository(_furEverTogetherDbContext);
+            }
+
+            return _volunteerRepository;
+        }
     }
 
     public RepositoryWrapper(FurEverTogetherDbContext furEverTogetherDbContext)
@@ -50,4 +101,9 @@ public class RepositoryWrapper : IRepositoryWrapper
     {
         _furEverTogetherDbContext.SaveChanges();
     }
+    public async Task SaveAsync()
+    {
+        await _furEverTogetherDbContext.SaveChangesAsync();
+    }
+    
 }

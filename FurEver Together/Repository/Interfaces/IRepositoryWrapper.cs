@@ -1,4 +1,7 @@
-﻿namespace FurEver_Together.Repository.Interfaces;
+﻿using FurEver_Together.DataModels;
+using Microsoft.EntityFrameworkCore;
+
+namespace FurEver_Together.Repository.Interfaces;
 
 public interface IRepositoryWrapper
 {
@@ -10,4 +13,5 @@ public interface IRepositoryWrapper
     IVolunteerRepository VolunteerRepository { get; }
 
     void Save();
+    Task SaveAsync();
 }

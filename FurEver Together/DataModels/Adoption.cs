@@ -1,17 +1,15 @@
-﻿namespace FurEver_Together.DataModels
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace FurEver_Together.DataModels
 {
     public partial class Adoption
     {
         public int Id { get; set; }
-        public string AnimalType { get; set; }
-        public string Breed { get; set; }
-        public string Age { get; set; }
-        public string Gender { get; set; }
-        public string ImageURL { get; set; }
-        public string Description { get; set; }
+        public DateTime AdoptionDate { get; set; }
+        public bool FreeTransportation { get; set; }
+        public string AdoptionStory { get; set; }
 
         // Navigation properties
-        public string UserId { get; set; }
 
         public User User { get; set; }
 

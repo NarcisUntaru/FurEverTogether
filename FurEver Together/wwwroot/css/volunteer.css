@@ -36,12 +36,14 @@
     .form-group input[type="text"],
     .form-group textarea
     {
-        width: 100%;
+        width: calc(100% - 20px); /* Adjust width as needed */
+        max-width: 100%; /* Ensure it doesn't exceed the container's width */
         padding: 10px;
         border-radius: 5px;
         border: 1px solid #ccc;
-        background-color: #fcf5f5
+        background-color: #fcf5f5;
     }
+
 
     .form-group textarea
     {
