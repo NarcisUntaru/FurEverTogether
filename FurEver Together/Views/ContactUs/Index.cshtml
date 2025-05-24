@@ -31,7 +31,12 @@
             <div class="form-group">
                 <button type="submit">Submit</button>
             </div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="success-message center-text">@TempData["SuccessMessage"]</div>
+            }
         </form>
+
     </div>
 </body>
 </html>

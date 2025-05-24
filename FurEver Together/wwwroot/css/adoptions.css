@@ -16,7 +16,7 @@
     color: #2f3b7b;
     margin-bottom: 75px;
     text-align: center;
-    background-color: rgba(251, 234, 235, 0.5);
+    background-color: rgba(251, 234, 235, 0.8);
     padding: 10px 20px;
     border-radius: 10px;
 }
@@ -110,4 +110,34 @@
 .card-dog:hover::after
 {
     content: "DOGS";
+}
+
+.card-bird:hover::before,
+.card-bird:hover::after
+{
+    color: #2f3b7b;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    transition: all 0.5s;
+}
+
+.card-bird:hover::after
+{
+    content: "BIRDS";
+}
+
+.card-small-mammals:hover::before,
+.card-small-mammals:hover::after
+{
+    color: #2f3b7b;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    transition: all 0.5s;
+}
+
+.card-small-mammals:hover::after
+{
+    content: "SMALL MAMMALS";
 }

@@ -1,41 +1,282 @@
 ﻿@page
-@model RegisterModel
+@model FurEver_Together.Areas.Identity.Pages.Account.RegisterModel
 @{
     ViewData["Title"] = "Register";
 }
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="\css\register.css">
-</head>
-
+<link rel="stylesheet" href="~/css/register.css" />
 
 <div class="register-container">
-      <div class="heading">Register a new account</div>
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div>
-                <input asp-for="Input.Email" class="input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                @* <label asp-for="Input.Email">Email</label> *@
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div>
-                <input asp-for="Input.Password" class="input" autocomplete="new-password" aria-required="true" placeholder="password" />
-                @* <label asp-for="Input.Password">Password</label> *@
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div>
-                <input asp-for="Input.ConfirmPassword" class="input" autocomplete="new-password" aria-required="true" placeholder=" confirm password" />
-                @* <label asp-for="Input.ConfirmPassword">Confirm Password</label> *@
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div>
-            <button id="registerSubmit" type="submit" class="login-button">Register</button>
+    <div class="heading">Register a new account</div>
+
+    <form method="post" id="registerForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <!-- STEP 1: Account Info -->
+        <div id="step1" class="form">
+            <input asp-for="Input.Email" class="input" placeholder="name@example.com" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+            <input asp-for="Input.Password" class="input" placeholder="password" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+            <input asp-for="Input.ConfirmPassword" class="input" placeholder="confirm password" />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+
+            <button type="button" class="login-button" onclick="goToStep2()">Next</button>
         </div>
-        </form>
-    </div>
+
+        <!-- STEP 2: Personality Quiz -->
+
+
+        <div id="step2" class="form" style="display: none;">
+            @* 1. Energy Level *@
+            <div class="question-container">
+                <img src="/uploads/Personality/EnergyLevel.png" alt="Energy Level" class="question-image" />
+                <label class="question-label">How active is your lifestyle?</label>
+
+                <input type="range"
+                       asp-for="Personality.EnergyLevel"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="energySlider"
+                       oninput="updateSliderLabels(this.value)" />
+
+                <div class="slider-labels">
+                    <span class="slider-label" data-value="0">Low</span>
+                    <span class="slider-label" data-value="1">Medium</span>
+                    <span class="slider-label" data-value="2">High</span>
+                </div>
+            </div>
+
+            @* 2. Sociability *@
+            <div class="question-container">
+                <img src="/uploads/Personality/Sociability.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Do you prefer quiet time or social interactions?</label>
+
+                <input type="range"
+                       asp-for="Personality.Sociability"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderSociability"
+                       oninput="updateSliderLabelsFor('sliderSociability')" />
+
+                <div class="slider-labels" id="labelsSociability">
+                    <span class="slider-label" data-value="0">Introvert</span>
+                    <span class="slider-label" data-value="1">Ambivert</span>
+                    <span class="slider-label" data-value="2">Extrovert</span>
+                </div>
+            </div>
+
+            @* 3. Affection Level *@
+            <div class="question-container">
+                <img src="/uploads/Personality/AffectionLevel.png" alt="Question Image" class="question-image" />
+                <label class="question-label">How do you handle unexpected changes?</label>
+
+                <input type="range"
+                       asp-for="Personality.AffectionLevel"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderAffectionLevel"
+                       oninput="updateSliderLabelsFor('sliderAffectionLevel')" />
+
+                <div class="slider-labels" id="labelsAffectionLevel">
+                    <span class="slider-label" data-value="0">Independent</span>
+                    <span class="slider-label" data-value="1">Cuddly</span>
+                    <span class="slider-label" data-value="2">Highly Affectionate</span>
+                </div>
+            </div>
+
+            @* 4. Trainability *@
+            <div class="question-container">
+                <img src="/uploads/Personality/Trainability.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Are you willing to train a pet or prefer one already trained?</label>
+
+                <input type="range"
+                       asp-for="Personality.Trainability"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderTrainability"
+                       oninput="updateSliderLabelsFor('sliderTrainability')" />
+
+                <div class="slider-labels" id="labelsTrainability">
+                    <span class="slider-label" data-value="0">Low</span>
+                    <span class="slider-label" data-value="1">Moderate</span>
+                    <span class="slider-label" data-value="2">High</span>
+                </div>
+            </div>
+
+            @* 5. Playfulness *@
+            <div class="question-container">
+                <img src="/uploads/Personality/Playfulness.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Do you enjoy interactive play with pets regularly?</label>
+
+                <input type="range"
+                       asp-for="Personality.Playfulness"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderPlayfulness"
+                       oninput="updateSliderLabelsFor('sliderPlayfulness')" />
+
+                <div class="slider-labels" id="labelsPlayfulness">
+                    <span class="slider-label" data-value="0">Low</span>
+                    <span class="slider-label" data-value="1">Moderate</span>
+                    <span class="slider-label" data-value="2">High</span>
+                </div>
+            </div>
+
+            @* 6. Aggression Level *@
+            <div class="question-container">
+                <img src="/uploads/Personality/AggressionLevel.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Can you tolerate a pet that is aggressive?</label>
+
+                <input type="range"
+                       asp-for="Personality.AggressionLevel"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderAggressionLevel"
+                       oninput="updateSliderLabelsFor('sliderAggressionLevel')" />
+
+                <div class="slider-labels" id="labelsAggressionLevel">
+                    <span class="slider-label" data-value="0">Low</span>
+                    <span class="slider-label" data-value="1">Moderate</span>
+                    <span class="slider-label" data-value="2">High</span>
+                </div>
+            </div>
+
+            @* 7. Noise Level *@
+            <div class="question-container">
+                <img src="/uploads/Personality/NoiseLevel.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Can you tolerate a pet that makes a lot of noise?</label>
+
+                <input type="range"
+                       asp-for="Personality.NoiseLevel"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderNoiseLevel"
+                       oninput="updateSliderLabelsFor('sliderNoiseLevel')" />
+
+                <div class="slider-labels" id="labelsNoiseLevel">
+                    <span class="slider-label" data-value="0">Very Quiet</span>
+                    <span class="slider-label" data-value="1">Moderate</span>
+                    <span class="slider-label" data-value="2">Loud</span>
+                </div>
+            </div>
+
+            @* 8. Good With Kids *@
+            <div class="question-container">
+                <img src="/uploads/Personality/GoodWithKids.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Do you have children living with you?</label>
+
+                <input type="range"
+                       asp-for="Personality.GoodWithKids"
+                       min="0" max="1" step="1"
+                       class="step-slider"
+                       id="sliderGoodWithKids"
+                       oninput="updateSliderLabelsFor('sliderGoodWithKids')" />
+
+                <div class="slider-labels" id="labelsGoodWithKids">
+                    <span class="slider-label" data-value="0">No</span>
+                    <span class="slider-label" data-value="1">Yes</span>
+                </div>
+            </div>
+
+            @* 9. Good With Other Pets *@
+            <div class="question-container">
+                <img src="/uploads/Personality/GoodWithOtherPets.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Do you already have other pets at home?</label>
+
+                <input type="range"
+                       asp-for="Personality.GoodWithOtherPets"
+                       min="0" max="1" step="1"
+                       class="step-slider"
+                       id="sliderGoodWithOtherPets"
+                       oninput="updateSliderLabelsFor('sliderGoodWithOtherPets')" />
+
+                <div class="slider-labels" id="labelsGoodWithOtherPets">
+                    <span class="slider-label" data-value="0">No</span>
+                    <span class="slider-label" data-value="1">Yes</span>
+                </div>
+            </div>
+
+            @* 10. Adaptability *@
+            <div class="question-container">
+                <img src="/uploads/Personality/Adaptability.png" alt="Question Image" class="question-image" />
+                <label class="question-label">How much time do you spend at home daily?</label>
+
+                <input type="range"
+                       asp-for="Personality.Adaptability"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderAdaptability"
+                       oninput="updateSliderLabelsFor('sliderAdaptability')" />
+
+                <div class="slider-labels" id="labelsAdaptability">
+                    <span class="slider-label" data-value="0">Less than 4 hours</span>
+                    <span class="slider-label" data-value="1">4–8 hours</span>
+                    <span class="slider-label" data-value="2">More than 8 hours</span>
+                </div>
+            </div>
+
+            @* 11. Anxiety Level *@
+            <div class="question-container">
+                <img src="/uploads/Personality/AnxietyLevel.png" alt="Question Image" class="question-image" />
+                <label class="question-label">Would you be okay with a pet that needs constant attention when alone?</label>
+
+                <input type="range"
+                       asp-for="Personality.AnxietyLevel"
+                       min="0" max="2" step="1"
+                       class="step-slider"
+                       id="sliderAnxietyLevel"
+                       oninput="updateSliderLabelsFor('sliderAnxietyLevel')" />
+
+                <div class="slider-labels" id="labelsAnxietyLevel">
+                    <span class="slider-label" data-value="0">Apartment</span>
+                    <span class="slider-label" data-value="1">House without yard</span>
+                    <span class="slider-label" data-value="2">House with yard</span>
+                </div>
+            </div>
+
+
+            <button type="button" class="login-button" onclick="goToStep1()">Back</button>
+            <button type="submit" class="login-button">Register</button>
+
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateSliderLabels(value) {
+            const labels = document.querySelectorAll('.slider-label');
+            labels.forEach(label => {
+                label.style.color = label.getAttribute('data-value') === value ? '#104d9e' : 'rgb(47, 60, 126)';
+                label.style.fontWeight = label.getAttribute('data-value') === value ? 'bold' : '600';
+            });
+        }
+
+        // Initialize highlight on page load or when needed
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('energySlider');
+            updateSliderLabels(slider.value);
+        });
+
+        function goToStep2() {
+            const email = document.querySelector('[name="Input.Email"]').value;
+            const password = document.querySelector('[name="Input.Password"]').value;
+            const confirm = document.querySelector('[name="Input.ConfirmPassword"]').value;
+            if (!email || !password || !confirm || password !== confirm) {
+                alert("Please fill out email and matching passwords.");
+                return;
+            }
+            document.getElementById("step1").style.display = "none";
+            document.getElementById("step2").style.display = "block";
+        }
+
+        function goToStep1() {
+            document.getElementById("step1").style.display = "block";
+            document.getElementById("step2").style.display = "none";
+        }
+    </script>
 }

@@ -1,48 +1,56 @@
 ﻿@model FurEver_Together.DataModels.Adoption
+@using FurEver_Together.Enums
 
-@{
-    ViewData["Title"] = "Details";
-}
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pet Details</title>
+    <link rel="stylesheet" href="/css/adoptiondetails.css" />
+</head>
+<body>
+    <div class="container-box">
+        <h1 class="title">Pet Adoption Request</h1>
+        @{
+            string statusClass = Model.Status switch
+            {
+                ApplicationStatus.Pending => "status-pending",
+                ApplicationStatus.Approved => "status-approved",
+                ApplicationStatus.Rejected => "status-rejected",
+                _ => ""
+            };
+            string statusMessage = Model.Status switch
+            {
+                ApplicationStatus.Pending => "Thank you for submitting your adoption application! We want you to know that your application is currently under careful review by our team. This process may take a few days as we want to ensure the best possible match between you and the pet. We appreciate your patience and understanding during this time. If you have any questions, please don't hesitate to reach out to us— we're here to help!",
 
-<h1>Details</h1>
+                ApplicationStatus.Approved => "Great news! Your adoption application has been approved, and we are excited to welcome you as the new family for your chosen pet. Our team will contact you shortly with the next steps to finalize the adoption and prepare your new furry friend for their new home. We can't wait to see the joy this adoption will bring to your life. Thank you for giving a shelter pet a second chance!",
 
-<div>
-    <h4>Adoption</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdoptionDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdoptionDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FreeTransportation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FreeTransportation)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AdoptionStory)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AdoptionStory)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cat)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cat.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dog)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dog.Id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+                ApplicationStatus.Rejected => "We regret to inform you that, after careful consideration, your adoption application has not been approved at this time. We understand this may be disappointing news, but please know that our decision was made with the pet’s best interest in mind. If you would like, feel free to contact us for more detailed feedback. Thank you for your interest and compassion toward animals in need.",
+                _ => ""
+            };
+        }
+        <div class="pet-info">
+            <span class="pet-name">@Model.Pet.Name</span><br />
+            <p class="match-label">Your personality matches with a percentage of:</p>
+            <p class="match-percentage">@((int)Math.Round((double)ViewData["MatchPercentage"]))%</p>
+            <a asp-action="Details" asp-controller="Pets" asp-route-id="@Model.PetId" class="btn view-button">View Pet</a>
+        </div>
+
+        <div class="request-info">
+            <p><strong>Adoption requested on:</strong> @Model.RequestDate</p>
+            <div class="status-message-box">
+                <p>@statusMessage</p>
+            </div>
+        </div>
+
+        <div class="actions">
+            <form asp-action="Approve" asp-controller="Adoptions" method="post" style="display:inline;">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn approve-button">Approve</button>
+            </form>
+            <form asp-action="Reject" asp-controller="Adoptions" method="post" style="display:inline;">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn reject-button">Reject</button>
+            </form>
+        </div>
+    </div>
+</body>
