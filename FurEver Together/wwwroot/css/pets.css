@@ -1,0 +1,228 @@
+﻿.pet-details-container
+{
+    display: flex;
+    flex-direction: row; /* side-by-side left and right columns */
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: rgba(251, 234, 235, 0.90);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 1300px;
+    margin: 100px auto;
+    gap: 40px;
+}
+
+
+    .pet-details-container .left-column
+    {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        padding-bottom: 20px;
+    }
+
+    .pet-details-container .arrival-date
+    {
+        text-align: center;
+        color: #2F3C7E;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+
+        .pet-details-container .left-column h2
+        {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2F3C7E;
+        }
+
+        /* NEW: center the image and basic details vertically in the remaining space */
+        .pet-details-container .left-column .image-and-basics
+        {
+            display: flex;
+            gap: 20px;
+            align-items: center; /* vertically center the image and details */
+            justify-content: flex-start; /* align them left horizontally */
+            flex-grow: 1; /* take all available vertical space */
+        }
+
+        .pet-details-container .left-column .image-container img
+        {
+            width: 200px;
+        }
+    .pet-details-container .image-and-basics
+    {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .pet-details-container .arrival-date
+    {
+        margin-top: auto;
+        text-align: center;
+        color: black;
+    }
+.detail-label
+{
+    font-weight: bold;
+    color: #2F3C7E;
+}
+        .pet-details-container .left-column .basic-details
+        {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            color: #2F3C7E;
+            font-weight: 600;
+        }
+
+            .pet-details-container .left-column .basic-details p
+            {
+                margin: 0;
+                font-weight: normal;
+                color: black;
+            }
+
+        .pet-details-container .left-column .details
+        {
+            margin-top: 20px;
+        }
+
+    .pet-details-container .right-column
+    {
+        flex: 1;
+        border-radius: 8px;
+    }
+
+        .pet-details-container .right-column h3
+        {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2F3C7E;
+        }
+
+.personality-grid
+{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.personality-item
+{
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+    .personality-item img
+    {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+.trait-name
+{
+    font-weight: 600;
+    color: #2F3C7E;
+    margin-bottom: 4px;
+}
+
+.trait-value
+{
+    color: #555;
+}
+
+.extra-info-box
+{
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin: 60px 20px 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.extra-info-box
+{
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px 20px;
+    margin: 80px 20px 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Center text inside */
+}
+
+.match-label
+{
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2F3C7E;
+    margin-bottom: 10px;
+}
+
+.match-percentage
+{
+    font-size: 3rem;
+    font-weight: bold;
+    color: #2fa13c;
+    margin: 0;
+}
+.adopt-button
+{
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #2F3C7E;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .adopt-button:hover
+    {
+        background-color: #1e2a5e;
+    }
+
+.admin-buttons
+{
+    margin-top: 35px;
+    display: flex;
+    gap: 10px;
+    margin-left: 240px;
+}
+
+.edit-button, .delete-button
+{
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+}
+
+.edit-button
+{
+    background-color: #4CAF50;
+}
+
+.delete-button
+{
+    background-color: #f44336;
+}

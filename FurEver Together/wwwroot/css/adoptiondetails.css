@@ -1,0 +1,135 @@
+﻿.container-box
+{
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    background-color: #FBEAEB;
+    text-align: center;
+}
+
+.title
+{
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #2F3C7E;
+}
+
+.pet-info
+{
+    text-align: center;
+    margin: 10px 0 20px 0;
+}
+
+.pet-name
+{
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    color: #444;
+}
+
+.view-button
+{
+    background-color: #2F3C7E;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    display: inline-block;
+    border: none;
+}
+
+        .view-button:hover
+
+{
+    background-color: #1e2a57;
+    text-decoration: none;
+}
+
+.request-info
+{
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.status-text
+{
+    margin: 20px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.status-message-box
+{
+    background-color: white;
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-top: 10px;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.status-pending
+{
+    color: #ff9800;
+}
+
+.status-approved
+{
+    color: #28a745;
+}
+
+.status-rejected
+{
+    color: #dc3545; /* red */
+}
+
+.actions
+{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn
+{
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.approve-button
+{
+    background-color: #28a745;
+}
+
+    .approve-button:hover
+    {
+        background-color: #218838;
+    }
+
+.reject-button
+{
+    background-color: #dc3545;
+}
+
+    .reject-button:hover
+    {
+        background-color: #c82333;
+    }
+.match-percentage
+{
+    color: green;
+    font-size: 20px;
+    font-weight: bold;
+}

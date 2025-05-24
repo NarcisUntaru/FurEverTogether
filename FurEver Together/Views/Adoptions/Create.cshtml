@@ -1,39 +1,52 @@
-﻿@model FurEver_Together.DataModels.Adoption
+﻿@model FurEver_Together.ViewModels.AdoptionViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Create Adoption</title>
+    <link rel="stylesheet" href="/css/create.css" />
+    <style>
+        /* Simple 2-column layout */
+        .form-row
+        {
+            display: flex;
+            gap: 2rem;
+        }
 
-<h1>Create</h1>
+        .form-column
+        {
+            flex: 1;
+        }
+    </style>
+</head>
 
-<h4>Adoption</h4>
-<hr />
+<body>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <label asp-for="AdoptionDate" class="control-label"></label>
-                <input asp-for="AdoptionDate" class="form-control" />
-                <span asp-validation-for="AdoptionDate" class="text-danger"></span>
+                <label asp-for="PetId" class="control-label"></label>
+                    <select asp-for="PetId" class="form-control" asp-items="Model.Pets">
+                        <option value="">-- Select a pet --</option>
+                    </select>
+                <span asp-validation-for="PetId" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="FreeTransportation" /> @Html.DisplayNameFor(model => model.FreeTransportation)
-                </label>
-            </div>
+
             <div class="form-group">
-                <label asp-for="AdoptionStory" class="control-label"></label>
-                <input asp-for="AdoptionStory" class="form-control" />
-                <span asp-validation-for="AdoptionStory" class="text-danger"></span>
-            </div>
+
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
+</body>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

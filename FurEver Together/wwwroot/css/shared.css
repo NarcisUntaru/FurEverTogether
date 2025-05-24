@@ -26,6 +26,11 @@
     margin-right: 20px;
 }
 
+.admin-panel
+{
+    margin-left: 600px;
+}
+
 .navbar a
 {
     float: left;
@@ -48,6 +53,7 @@
     {
         background-color: #FBEAEB;
         color: #2F3C7E;
+        font-weight: bold;
     }
 
 
@@ -63,6 +69,10 @@
         height: 50px;
         cursor: pointer;
     }
+        .logo-container:hover img
+        {
+            filter: invert(100%); /* Invert colors on hover */
+        }
 
 .auth-buttons
 {
@@ -87,6 +97,27 @@
             background-color: #FBEAEB;
             color: #2F3C7E;
         }
+
+#logout
+{
+    display: block;
+    color: white;
+    font-size: 16px;
+    padding: 14px 20px;
+    border-radius: 20px;
+    background-color: #2F3C7E;
+    margin-left: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 1px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+    #logout:hover
+    {
+        background-color: #FBEAEB;
+        color: #2F3C7E;
+    }
 
 footer
 {
@@ -138,23 +169,3 @@ footer
                 {
                     text-decoration: underline;
                 }
-#logout
-{
-    display: block;
-    color: white;
-    font-size: 14px;
-    padding: 14px 20px;
-    border-radius: 20px;
-    background-color: #2F3C7E;
-    margin-left: 10px;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.2);
-}
-
-    #logout:hover
-    {
-        background-color: #FBEAEB;
-        color: #2F3C7E;
-    }

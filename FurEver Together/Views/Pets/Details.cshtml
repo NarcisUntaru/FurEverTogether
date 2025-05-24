@@ -1,0 +1,123 @@
+﻿@model FurEver_Together.DataModels.Pet
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pet Details</title>
+    <link rel="stylesheet" href="/css/pets.css" />
+</head>
+<body>
+    <div class="pet-details-container">
+       <div class="left-column">
+    <h2>@Html.DisplayFor(model => model.Name)</h2>
+
+    <div class="image-and-basics">
+        <div class="image-container">
+            @{
+                var imageUrl = Model.PictureUrl;
+                if (string.IsNullOrEmpty(imageUrl))
+                {
+                    imageUrl = "https://via.placeholder.com/250x300";
+                }
+            }
+            <img id="petImage" src="@imageUrl" alt="Pet Image" onerror="handleImageError()" />
+        </div>
+
+        <div class="basic-details">
+                    <p><span class="detail-label">Type:</span> @Html.DisplayFor(model => model.Type)</p>
+                    <p><span class="detail-label">Breed:</span> @Html.DisplayFor(model => model.Breed)</p>
+                    <p><span class="detail-label">Age:</span> @Html.DisplayFor(model => model.Age)</p>
+                    <p><span class="detail-label">Gender:</span> @Html.DisplayFor(model => model.Gender)</p>
+        </div>
+    </div>
+
+            <div class="details">
+                <p><span class="detail-label">Description:</span></p>
+                @Html.DisplayFor(model => model.Description)
+            </div>
+
+            <div class="arrival-date">
+                <p><span class="detail-label">Arrival Date:</span> @Html.DisplayFor(model => model.ArrivalDate)</p>
+            </div>
+            <div class="extra-info-box">
+                <p class="match-label">Your personality matches with a percentage of:</p>
+                <p class="match-percentage">@((int)Math.Round((double)ViewData["MatchPercentage"]))%</p>
+                <form method="post" asp-controller="Adoptions" asp-action="Adopt" asp-route-petId="@Model.PetId">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="adopt-button">ADOPT NOW</button>
+                </form>
+            </div>
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="admin-buttons">
+                    <a class="edit-button" asp-controller="Pets" asp-action="Edit" asp-route-id="@Model.PetId">Edit</a>
+                    <form method="post" asp-controller="Pets" asp-action="Delete" asp-route-id="@Model.PetId"
+                          onsubmit="return confirm('Are you sure you want to delete this pet?');"
+                          style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
+                </div>
+            }
+    </div>
+
+        <div class="right-column">
+            <h3>Personality Profile</h3>
+            @{
+                var personalityTraits = new List<(string Name, string? Value)>
+            {
+            ("Energy Level", Model.Personality?.EnergyLevel.ToString()),
+            ("Sociability", Model.Personality?.Sociability.ToString()),
+            ("Affection Level", Model.Personality?.AffectionLevel.ToString()),
+            ("Trainability", Model.Personality?.Trainability.ToString()),
+            ("Playfulness", Model.Personality?.Playfulness.ToString()),
+            ("Aggression Level", Model.Personality?.AggressionLevel.ToString()),
+            ("Noise Level", Model.Personality?.NoiseLevel.ToString()),
+            ("Good With Kids", Model.Personality?.GoodWithKids.ToString()),
+            ("Good With Other Pets", Model.Personality?.GoodWithOtherPets.ToString()),
+            ("Adaptability", Model.Personality?.Adaptability.ToString()),
+            ("Anxiety Level", Model.Personality?.AnxietyLevel.ToString())
+            };
+
+                var traitImages = new Dictionary<string, string>
+            {
+                ["Energy Level"] = "/uploads/Personality/EnergyLevel.png",
+                ["Sociability"] = "/uploads/Personality/Sociability.png",
+                ["Affection Level"] = "/uploads/Personality/AffectionLevel.png",
+                ["Trainability"] = "/uploads/Personality/Trainability.png",
+                ["Playfulness"] = "/uploads/Personality/Playfulness.png",
+                ["Aggression Level"] = "/uploads/Personality/AggressionLevel.png",
+                ["Noise Level"] = "/uploads/Personality/NoiseLevel.png",
+                ["Good With Kids"] = "/uploads/Personality/GoodWithKids.png",
+                ["Good With Other Pets"] = "/uploads/Personality/GoodWithOtherPets.png",
+                ["Adaptability"] = "/uploads/Personality/Adaptability.png",
+                ["Anxiety Level"] = "/uploads/Personality/AnxietyLevel.png"
+            };
+            }
+            <div class="personality-grid">
+                @foreach (var trait in personalityTraits)
+                {
+                    var imgSrc = traitImages.ContainsKey(trait.Name) ? traitImages[trait.Name] : "https://a1petmeats.com.au/wp-content/uploads/2019/11/no-image-available.jpg";
+
+                    <div class="personality-item">
+                        <img src="@imgSrc" alt="@trait.Name" />
+                        <p class="trait-name">@trait.Name</p>
+                        <p class="trait-value">@trait.Value</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function handleImageError() {
+            var placeholderUrl = "/uploads/Animals/no-image-available-pets.jpg";
+            var imageElement = document.getElementById('petImage');
+            imageElement.src = placeholderUrl;
+        }
+    </script>
+</body>
+</html>

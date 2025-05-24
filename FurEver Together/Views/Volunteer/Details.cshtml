@@ -1,0 +1,65 @@
+﻿@model FurEver_Together.ViewModels.VolunteerViewModel
+@using FurEver_Together.Enums
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volutneer Details</title>
+    <link rel="stylesheet" href="/css/volunteer.css" />
+</head>
+<body>
+    <div class="container-box">
+        <h1 class="title">Volunteer Request</h1>
+        @{
+            string statusClass = Model.Status switch
+            {
+                ApplicationStatus.Pending => "status-pending",
+                ApplicationStatus.Approved => "status-approved",
+                ApplicationStatus.Rejected => "status-rejected",
+                _ => ""
+            };
+            string statusMessage = Model.Status switch
+            {
+                ApplicationStatus.Pending => "Thank you for submitting your adoption application! We want you to know that your application is currently under careful review by our team. This process may take a few days as we want to ensure the best possible match between you and the pet. We appreciate your patience and understanding during this time. If you have any questions, please don't hesitate to reach out to us— we're here to help!",
+
+                ApplicationStatus.Approved => "Great news! Your adoption application has been approved, and we are excited to welcome you as the new family for your chosen pet. Our team will contact you shortly with the next steps to finalize the adoption and prepare your new furry friend for their new home. We can't wait to see the joy this adoption will bring to your life. Thank you for giving a shelter pet a second chance!",
+
+                ApplicationStatus.Rejected => "We regret to inform you that, after careful consideration, your adoption application has not been approved at this time. We understand this may be disappointing news, but please know that our decision was made with the pet’s best interest in mind. If you would like, feel free to contact us for more detailed feedback. Thank you for your interest and compassion toward animals in need.",
+                _ => ""
+            };
+        }
+        <div class="volunteer-info">
+            <span class="volunteer-name">@Model.FullName</span><br />
+            <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+            <p><strong>Message:</strong> @Model.Message</p>
+            <p><strong>Transportation Available:</strong> @(Model.TransportationAvailable ? "Yes" : "No")</p>
+            <p><strong>Previous Experience:</strong> @(Model.PreviousExperience ? "Yes" : "No")</p>
+            <p><strong>Hours Per Week:</strong> @Model.HoursPerWeek</p>
+            <p><strong>Agreement to Terms:</strong> @(Model.AgreementToTerms ? "Yes" : "No")</p>
+            <p><strong>Is Over 18:</strong> @(Model.IsOver18 ? "Yes" : "No")</p>
+        </div>
+
+        <div class="request-info">
+            <p><strong>Volunteering requested on:</strong> @Model.RequestDate</p>
+        </div>
+        <div class="request-info">
+            <p><strong>Volunteering request responded on:</strong> @Model.RespondDate</p>
+        </div>
+
+        <div class="status-message-box">
+            <p>@statusMessage</p>
+        </div>
+
+        <div class="actions">
+            <form asp-action="Approve" asp-controller="Volunteer" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                <button type="submit" class="btn approve-button">Approve</button>
+            </form>
+
+            <form asp-action="Reject" asp-controller="Volunteer" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                <button type="submit" class="btn reject-button">Reject</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+

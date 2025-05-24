@@ -1,28 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using FurEver_Together.Data;
 using FurEver_Together.DataModels;
 using FurEver_Together.Services.Interfaces;
 using FurEver_Together.ViewModels;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using FurEver_Together.Enums;
+using FurEverTogether.Services;
 
 namespace FurEver_Together.Controllers
 {
     public class AdoptionsController : Controller
     {
         private readonly IAdoptionService _adoptionService;
-        private readonly IDogService _dogService;
-        private readonly ICatService _catService;
+        private readonly IPetService _petService;
+        private readonly IMatchingService _matchingService;
+        private readonly UserManager<User> _userManager;
+        private readonly IPdfExportService _pdfExportService;
 
-        public AdoptionsController(IAdoptionService adoptionService, IDogService dogService, ICatService catService)
+        public AdoptionsController(
+            IMatchingService matchingService,
+            IAdoptionService adoptionService,
+            IPetService petService,
+            IPdfExportService pdfExportService,
+            UserManager<User> userManager)
         {
+            _matchingService = matchingService;
             _adoptionService = adoptionService;
-            _dogService = dogService;
-            _catService = catService;
+            _petService = petService;
+            _userManager = userManager;
+            _pdfExportService = pdfExportService;
         }
 
         // GET: Adoptions
@@ -35,16 +44,21 @@ namespace FurEver_Together.Controllers
         // GET: Adoptions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var adoption = await _adoptionService.GetAdoptionByIdAsync(id.Value);
-            if (adoption == null)
+            if (adoption == null) return NotFound();
+
+            double matchPercentage = 0;
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null && adoption.Pet != null)
             {
-                return NotFound();
+                // Use MatchingService to calculate match percentage
+                matchPercentage = await _matchingService.GetMatchPercentageForPetAndUserAsync(adoption.Pet.PetId, user.Id);
             }
+
+            ViewData["MatchPercentage"] = matchPercentage;
 
             return View(adoption);
         }
@@ -52,13 +66,11 @@ namespace FurEver_Together.Controllers
         // GET: Adoptions/Create
         public async Task<IActionResult> Create()
         {
-            var dogs = await _dogService.GetAllDogsAsync();
-            var cats = await _catService.GetAllCatsAsync();
+            var pets = await _petService.GetAllPetsAsync();
 
             var viewModel = new AdoptionViewModel
             {
-                Dogs = dogs.Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Name }).ToList(),
-                Cats = cats.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList()
+                Pets = pets.Select(p => new SelectListItem { Value = p.PetId.ToString(), Text = p.Name }).ToList()
             };
 
             return View(viewModel);
@@ -69,27 +81,18 @@ namespace FurEver_Together.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AdoptionViewModel viewModel)
         {
-            if (ModelState.IsValid)
-            {
                 var adoption = new Adoption
                 {
-                    Id = viewModel.Id,
-                    AdoptionDate = viewModel.AdoptionDate,
-                    FreeTransportation = viewModel.FreeTransportation,
-                    AdoptionStory = viewModel.AdoptionStory,
-                    DogId = viewModel.DogId,
-                    CatId = viewModel.CatId
+                    PetId = viewModel.PetId,
+                    AdoptionDate = null, 
+                    RequestDate = null, 
                 };
 
                 await _adoptionService.AddAdoptionAsync(adoption);
                 return RedirectToAction(nameof(Index));
-            }
 
-            var dogs = await _dogService.GetAllDogsAsync();
-            var cats = await _catService.GetAllCatsAsync();
-
-            viewModel.Dogs = dogs.Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Name }).ToList();
-            viewModel.Cats = cats.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
+            var pets = await _petService.GetAllPetsAsync();
+            viewModel.Pets = pets.Select(p => new SelectListItem { Value = p.PetId.ToString(), Text = p.Name }).ToList();
 
             return View(viewModel);
         }
@@ -97,90 +100,66 @@ namespace FurEver_Together.Controllers
         // GET: Adoptions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var adoption = await _adoptionService.GetAdoptionByIdAsync(id.Value);
-            if (adoption == null)
-            {
-                return NotFound();
-            }
+            if (adoption == null) return NotFound();
 
-            var dogs = await _dogService.GetAllDogsAsync();
-            var cats = await _catService.GetAllCatsAsync();
+            var pets = await _petService.GetAllPetsAsync();
 
             var viewModel = new AdoptionViewModel
             {
                 Id = adoption.Id,
                 AdoptionDate = adoption.AdoptionDate,
-                FreeTransportation = adoption.FreeTransportation,
-                AdoptionStory = adoption.AdoptionStory,
-                DogId = adoption.DogId,
-                CatId = adoption.CatId,
-                Dogs = dogs.Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Name }).ToList(),
-                Cats = cats.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList()
+                PetId = adoption.PetId,
+                Pets = pets.Select(p => new SelectListItem { Value = p.PetId.ToString(), Text = p.Name }).ToList()
             };
 
             return View(viewModel);
         }
 
-        // POST: Adoptions/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AdoptionViewModel viewModel)
-        {
-            if (id != viewModel.Id)
-            {
-                return NotFound();
-            }
+        //// POST: Adoptions/Edit/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, AdoptionViewModel viewModel)
+        //{
+        //    if (id != viewModel.Id) return NotFound();
 
-            if (ModelState.IsValid)
-            {
-                var adoption = new Adoption
-                {
-                    Id = viewModel.Id,
-                    AdoptionDate = viewModel.AdoptionDate,
-                    FreeTransportation = viewModel.FreeTransportation,
-                    AdoptionStory = viewModel.AdoptionStory,
-                    DogId = viewModel.DogId,
-                    CatId = viewModel.CatId
-                };
+        //    if (ModelState.IsValid)
+        //    {
+        //        var adoption = new Adoption
+        //        {
+        //            Id = viewModel.Id,
+        //            AdoptionDate = viewModel.AdoptionDate,
+        //            FreeTransportation = viewModel.FreeTransportation,
+        //            AdoptionStory = viewModel.AdoptionStory,
+        //            PetId = viewModel.PetId
+        //        };
 
-                try
-                {
-                    await _adoptionService.UpdateAdoptionAsync(adoption);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    return NotFound();
-                }
-                return RedirectToAction(nameof(Index));
-            }
+        //        try
+        //        {
+        //            await _adoptionService.UpdateAdoptionAsync(adoption);
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            return NotFound();
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-            var dogs = await _dogService.GetAllDogsAsync();
-            var cats = await _catService.GetAllCatsAsync();
+        //    var pets = await _petService.GetAllPetsAsync();
+        //    viewModel.Pets = pets.Select(p => new SelectListItem { Value = p.PetId.ToString(), Text = p.Name }).ToList();
 
-            viewModel.Dogs = dogs.Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Name }).ToList();
-            viewModel.Cats = cats.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
-
-            return View(viewModel);
-        }
+        //    return View(viewModel);
+        //}
 
         // GET: Adoptions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var adoption = await _adoptionService.GetAdoptionByIdAsync(id.Value);
-            if (adoption == null)
-            {
-                return NotFound();
-            }
+            if (adoption == null) return NotFound();
 
             return View(adoption);
         }
@@ -193,5 +172,69 @@ namespace FurEver_Together.Controllers
             await _adoptionService.DeleteAdoptionAsync(id);
             return RedirectToAction(nameof(Index));
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Adopt(int petId)
+        {
+            var userId = User?.Identity?.Name;
+
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Account");
+
+            var user = await _userManager.FindByNameAsync(userId);
+            if (user == null)
+                return NotFound("User not found");
+
+            var adoption = await _adoptionService.GetAdoptionByPetIdAsync(petId);
+            if (adoption == null)
+                return NotFound("Adoption record not found for the selected pet.");
+
+            // Update the existing adoption record
+            adoption.UserId = user.Id;
+            adoption.Status = ApplicationStatus.Pending;
+            adoption.RequestDate = DateTime.Now;
+
+            await _adoptionService.UpdateAdoptionAsync(adoption);
+
+            return RedirectToAction("Index", "Adoptions");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var adoption = await _adoptionService.GetAdoptionByIdAsync(id);
+            if (adoption == null) return NotFound();
+
+            adoption.Status = ApplicationStatus.Approved;
+            adoption.AdoptionDate = DateTime.Now;
+
+            await _adoptionService.UpdateAdoptionAsync(adoption);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reject(int id)
+        {
+            var adoption = await _adoptionService.GetAdoptionByIdAsync(id);
+            if (adoption == null) return NotFound();
+
+            adoption.Status = ApplicationStatus.Rejected;
+            adoption.AdoptionDate = DateTime.Now;
+
+            await _adoptionService.UpdateAdoptionAsync(adoption);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Export()
+        {
+            string html = "<h1>Hello from service</h1><p>This is a PDF.</p>";
+            byte[] pdf = _pdfExportService.GeneratePdfFromHtml(html, "My PDF");
+
+            return File(pdf, "application/pdf", "output.pdf");
+        }
+
     }
 }

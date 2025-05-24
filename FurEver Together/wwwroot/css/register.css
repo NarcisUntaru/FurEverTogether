@@ -25,6 +25,7 @@
     margin-top: 20px;
 }
 
+
     .form .input
     {
         width: calc(100% - 40px);
@@ -158,4 +159,79 @@ agreement
     text-decoration: none;
     color: #0099ff;
     font-size: 9px;
+}
+
+.question-container
+{
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.question-label
+{
+    display: block;
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #2F3C7E;
+}
+
+.step-slider
+{
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 5px;
+    background: #ddd;
+    outline: none;
+    cursor: pointer;
+}
+
+    .step-slider::-webkit-slider-thumb
+    {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #2F3C7E;
+        cursor: pointer;
+        margin-top: -8px;
+    }
+
+    .step-slider::-moz-range-thumb
+    {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #2F3C7E;
+        cursor: pointer;
+    }
+
+.slider-labels
+{
+    display: flex;
+    justify-content: space-between;
+    max-width: 300px;
+    margin: 0 auto;
+    font-size: 14px;
+    color: rgb(47, 60, 126);
+    font-weight: 600;
+    user-select: none;
+}
+
+.slider-label
+{
+    text-align: center;
+}
+
+.question-image
+{
+    display: block;
+    margin: 0 auto 15px auto; /* Center horizontally and add spacing below */
+    max-width: 100px; /* Make image relatively small */
+    height: auto; /* Keep aspect ratio */
 }

@@ -1,5 +1,4 @@
 ﻿using FurEver_Together.DataModels;
-using FurEver_Together.Repository;
 using FurEver_Together.Repository.Interfaces;
 using FurEver_Together.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +13,15 @@ namespace FurEver_Together.Services
         {
             _repositoryWrapper = repositoryWrapper;
         }
-
+        public async Task<Adoption> GetAdoptionByPetIdAsync(int petId)
+        {
+            return await _repositoryWrapper.AdoptionRepository.GetAdoptionByPetIdAsync(petId);
+        }
         public async Task<Adoption> GetAdoptionByIdAsync(int id)
         {
             return await _repositoryWrapper.AdoptionRepository.GetByIdAsync(id);
         }
+
         public async Task<IEnumerable<Adoption>> GetAllAdoptionsAsync()
         {
             return await _repositoryWrapper.AdoptionRepository.GetAllAsync();
@@ -43,6 +46,11 @@ namespace FurEver_Together.Services
                 await _repositoryWrapper.SaveAsync();
             }
         }
+        public async Task<Adoption?> GetAdoptionByPetAndUserAsync(int petId, string userId)
+        {
+            return await _repositoryWrapper.AdoptionRepository.GetAdoptionByPetAndUserAsync(petId, userId);
+        }
+
 
     }
 }
