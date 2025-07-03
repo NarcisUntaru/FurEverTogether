@@ -1,89 +1,92 @@
-﻿html, body
+﻿
+html, body
 {
     display: grid;
     grid-template-rows: auto 1fr auto;
     min-height: 100vh;
 }
-
-.flip-card-container
+.pet-container
+{
+    border-radius: 20px; /* rounded corners */
+    background-color: rgba(251, 234, 235, 0.9);
+    padding: 20px; /* inner spacing */
+    max-width: 1400px; /* max width (adjust later) */
+    margin: 40px auto; /* center horizontally with top/bottom spacing */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* subtle shadow */
+}
+.filter-container
+{
+    display: flex;
+    justify-content: left;
+}
+.filter-label
+{
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-left: 10px;
+    font-size: 16px;
+}
+.pet-card-container
 {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-gap: 200px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+    grid-gap: 60px;
+    justify-content: center; 
     justify-items: center;
-    padding: 100px;
+    padding: 50px;
 }
 
-.flip-card
+.pet-card
 {
-    background-color: transparent;
-    height: 350px;
+    background-color: #fff;
     width: 250px;
-    perspective: 1000px;
-    font-family: sans-serif;
-}
-
-.title
-{
-    font-size: 1.5em;
-    font-weight: 900;
-    text-align: center;
-    margin: 0;
-}
-
-.flip-card-inner
-{
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-}
-
-.flip-card:hover .flip-card-inner
-{
-    transform: rotateY(180deg);
-}
-
-.flip-card-front, .flip-card-back
-{
-    box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.2);
-    position: absolute;
+    height: 350px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
     border: 2px solid #2F3C7E;
     border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 8px 14px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    color: inherit;
+    font-family: sans-serif;
+    transition: transform 0.5s ease;
 }
-
-.flip-card-front
-{
-    background: linear-gradient(120deg, bisque 60%, rgb(255, 231, 222) 88%, rgb(255, 211, 195) 40%, rgba(255, 127, 80, 0.603) 48%);
-    color: #2F3C7E;
-    overflow: hidden; /* Ensure content respects the border-radius */
-}
-
-.flip-card-back
-{
-    background: #FBEAEB;
-    color: #2F3C7E;
-    transform: rotateY(180deg);
-}
-
-.dog-image
+    .pet-card:hover
+    {
+        transform: rotate(1deg) scale(1.05);
+    }
+.pet-image
 {
     width: 100%;
-    height: 100%;
+    height: 80%;
     object-fit: cover;
-    border-radius: inherit;
 }
 
-button[type="submit"]
+.pet-name
+{
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: #FBEAEB;
+    color: #2F3C7E;
+}
+
+.no-image-text
+{
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #888;
+    text-align: center;
+}
+
+button[type="submit"]:not(.logout-button)
 {
     margin-top: 20px;
     margin-left: 20px;
@@ -98,8 +101,149 @@ button[type="submit"]
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-    button[type="submit"]:hover
+    button[type="submit"]:not(.logout-button):hover
     {
         background-color: #1e2654;
         box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.12);
     }
+
+
+.select
+{
+    width: fit-content;
+    cursor: pointer;
+    position: relative;
+    transition: 300ms;
+    color: #FBEAEB;
+    overflow: hidden;
+}
+
+.selected
+{
+    background-color: #2F3C7E;
+    padding: 5px;
+    margin-bottom: 3px;
+    border-radius: 5px;
+    position: relative;
+    z-index: 100000;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.arrow
+{
+    position: relative;
+    right: 0px;
+    height: 10px;
+    transform: rotate(-90deg);
+    width: 25px;
+    fill: black;
+    z-index: 100000;
+    transition: 300ms;
+}
+
+.options
+{
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #2F3C7E;
+    position: relative;
+    top: -100px;
+    opacity: 0;
+    transition: 300ms;
+}
+
+.select:hover > .options
+{
+    opacity: 1;
+    top: 0;
+}
+
+.select:hover > .selected .arrow
+{
+    transform: rotate(0deg);
+
+}
+
+.option
+{
+    border-radius: 5px;
+    padding: 5px;
+    transition: 300ms;
+    background-color: #2F3C7E;
+    width: 150px;
+    font-size: 15px;
+}
+
+    .option:hover
+    {
+        background-color: #4759b5;
+    }
+
+.options input[type="radio"]
+{
+    display: none;
+}
+
+.options label
+{
+    display: inline-block;
+}
+
+    .options label::before
+    {
+        content: attr(data-txt);
+    }
+
+.options input[type="radio"]:checked + label
+{
+    display: none;
+}
+
+.options input[type="radio"]#all:checked + label
+{
+    display: none;
+}
+
+.select:has(.options input[type="radio"]#all:checked) .selected::before
+{
+    content: attr(data-default);
+}
+
+.select:has(.options input[type="radio"]#option-1:checked) .selected::before
+{
+    content: attr(data-one);
+}
+
+.select:has(.options input[type="radio"]#option-2:checked) .selected::before
+{
+    content: attr(data-two);
+}
+
+.select:has(.options input[type="radio"]#option-3:checked) .selected::before
+{
+    content: attr(data-three);
+}
+.filter-wrapper
+{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.match-description
+{
+    text-align: center;
+    font-size: 16px;
+    color: #2F3C7E;
+    margin-left: 220px;
+    margin-right: auto;
+    line-height: 1;
+}
+

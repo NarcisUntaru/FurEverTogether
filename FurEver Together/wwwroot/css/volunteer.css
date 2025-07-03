@@ -7,7 +7,29 @@
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     background-color: #FBEAEB;
 }
+.container-box
+{
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    background-color: #FBEAEB;
 
+}
+.volunteer-info
+{
+    text-align: center;
+    margin: 10px 0 20px 0;
+}
+.volunteer-name
+{
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    color: #444;
+    text-align: center;
+}
 .title
 {
     font-size: 24px;
@@ -19,6 +41,7 @@
 .volunteer-info
 {
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .form-group
@@ -31,69 +54,188 @@
     {
         display: block;
         font-weight: bold;
+        margin-bottom: 6px;
     }
 
-    .form-group input[type="text"],
-    .form-group textarea
+/* Center text for input fields */
+.center-text
+{
+    text-align: center;
+}
+
+    .center-text input,
+    .center-text textarea
     {
-        width: calc(100% - 20px); /* Adjust width as needed */
-        max-width: 100%; /* Ensure it doesn't exceed the container's width */
+        width: calc(100% - 100px);
+        max-width: 100%;
         padding: 10px;
         border-radius: 5px;
         border: 1px solid #ccc;
         background-color: #fcf5f5;
+        margin: 0 auto;
+        display: block;
+
     }
 
-
-    .form-group textarea
+    .center-text textarea
     {
         resize: none;
         overflow-y: hidden;
     }
 
-    .form-group button
+/* Radio group styling */
+.radio-group
+{
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* space between yes and no */
+    margin-top: 8px;
+
+}
+
+    .radio-group input[type="radio"]
     {
-        padding: 10px 20px;
-        background-color: #2F3C7E;
-        color: white;
-        border: none;
-        border-radius: 5px;
+        margin-right: 5px;
         cursor: pointer;
     }
 
-.center-text
+    .radio-group label
+    {
+        cursor: pointer;
+        font-weight: normal;
+    }
+
+
+/* Terms and conditions styling */
+.terms
 {
-    display: block;
-    margin: 0 auto;
     text-align: center;
+    margin-top: 30px;
 }
 
-button
+/* Button style */
+.form-group button
 {
-    padding: 1.3em 3em;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 2.5px;
-    font-weight: 500;
-    color: #000;
-    background-color: #fff;
+    padding: 10px 20px;
+    background-color: #2F3C7E;
+    color: white;
     border: none;
-    border-radius: 45px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease 0s;
+    border-radius: 5px;
     cursor: pointer;
-    outline: none;
 }
 
-    button:hover
+.text-danger
+{
+    color: #d9534f;
+    font-size: 0.875em;
+    margin-top: 5px;
+}
+
+.center-text p
+{
+    margin-bottom: 30px;
+}
+.terms
+{
+    text-align: left;
+    margin-top: 10px;
+    display: flex;
+    align-items: center; /* vertically centers the checkbox and label text */
+    gap: 8px; /* space between checkbox and text */
+}
+
+    .terms label
     {
-        background-color: #23c483;
-        box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
-        color: #fff;
-        transform: translateY(-7px);
+        margin: 0; /* remove default margins */
+        cursor: pointer;
     }
 
-    button:active
+
+/* Additional style for already submitted message */
+.submitted-container
+{
+    background-color: #E4F9F5; /* a soft light green/blue background */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 250px;
+}
+
+    .submitted-container .title
     {
-        transform: translateY(-1px);
+        color: #2F3C7E;
+        font-size: 26px;
+        margin-bottom: 20px;
     }
+
+    .submitted-container p
+    {
+        font-size: 18px;
+        color: #333;
+    }
+
+.form-range
+{
+    width: 100%;
+    margin-top: 10px;
+}
+.actions
+{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn
+{
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.approve-button
+{
+    background-color: #28a745;
+}
+
+    .approve-button:hover
+    {
+        background-color: #218838;
+    }
+
+.reject-button
+{
+    background-color: #dc3545;
+}
+
+    .reject-button:hover
+    {
+        background-color: #c82333;
+    }
+.request-info
+{
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.status-text
+{
+    margin: 20px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.status-message-box
+{
+    background-color: white;
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-top: 10px;
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.4;
+}

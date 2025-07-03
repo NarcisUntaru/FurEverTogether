@@ -2,15 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using FurEver_Together.Data;
 using FurEver_Together.DataModels;
+using FurEver_Together.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
 {
@@ -18,45 +20,39 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly FurEverTogetherDbContext _furEverTogetherDbContext;
 
         public IndexModel(
             UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            FurEverTogetherDbContext furEverTogetherDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _furEverTogetherDbContext = furEverTogetherDbContext;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string Username { get; set; }
+        public string Email { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
+        public List<Pet> Pets { get; set; }
+        public PersonalityProfile? Personality { get; set; }
+        public List<Adoption> UserAdoptionRequests { get; set; }
+        public List<Adoption> AllAdoptionRequests { get; set; }
+        public List<Volunteer> UserVolunteerApplications { get; set; }
+        public List<Volunteer> AllVolunteerApplications { get; set; }
+
+      
+        public List<User> Users { get; set; }
+
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -73,6 +69,16 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
             {
                 PhoneNumber = phoneNumber
             };
+
+            UserVolunteerApplications = await _furEverTogetherDbContext.Volunteers
+    .Where(v => v.UserId == user.Id)
+    .ToListAsync();
+
+            var userWithPreferences = await _furEverTogetherDbContext.Users
+                .Include(u => u.Preferences)
+                .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+            Personality = userWithPreferences?.Preferences;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -82,6 +88,34 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
+            // User-specific adoption requests
+            UserAdoptionRequests = await _furEverTogetherDbContext.Adoptions
+                .Include(a => a.Pet)
+                .Where(a => a.UserId == user.Id)
+                .ToListAsync();
+
+            // User-specific volunteer applications
+            UserVolunteerApplications = await _furEverTogetherDbContext.Volunteers
+                .Where(v => v.UserId == user.Id)
+                .ToListAsync();
+
+            if (await _userManager.IsInRoleAsync(user, "Administrator"))
+            {
+                // Admin sees all adoption requests
+                AllAdoptionRequests = await _furEverTogetherDbContext.Adoptions
+                    .Include(a => a.Pet)
+                    .ToListAsync();
+
+                // Admin sees all volunteer applications
+                AllVolunteerApplications = await _furEverTogetherDbContext.Volunteers
+                    .ToListAsync();
+
+                // Admin also sees all users
+                Users = await _userManager.Users.ToListAsync();
+            }
+
+            Pets = await _furEverTogetherDbContext.Pets.ToListAsync();
 
             await LoadAsync(user);
             return Page();

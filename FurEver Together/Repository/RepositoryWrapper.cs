@@ -9,9 +9,9 @@ public class RepositoryWrapper : IRepositoryWrapper
 {
     private readonly FurEverTogetherDbContext _furEverTogetherDbContext;
     private IAdoptionRepository? _adoptionRepository;
-    private ICatRepository? _catRepository;
+    //private ICatRepository? _catRepository;
     private IContactUsRepository? _contactUsRepository;
-    private IDogRepository? _dogRepository;
+    private IPetRepository? _petRepository;
     private IUserRepository? _userRepository;
     private IVolunteerRepository? _volunteerRepository;
 
@@ -28,18 +28,18 @@ public class RepositoryWrapper : IRepositoryWrapper
         }
     }
 
-    public ICatRepository CatRepository
-    {
-        get
-        {
-            if (_catRepository == null)
-            {
-                _catRepository = new CatRepository(_furEverTogetherDbContext);
-            }
+    //public ICatRepository CatRepository
+    //{
+    //    get
+    //    {
+    //        if (_catRepository == null)
+    //        {
+    //            _catRepository = new CatRepository(_furEverTogetherDbContext);
+    //        }
 
-            return _catRepository;
-        }
-    }
+    //        return _catRepository;
+    //    }
+    //}
 
     public IContactUsRepository ContactUsRepository
     {
@@ -54,16 +54,16 @@ public class RepositoryWrapper : IRepositoryWrapper
         }
     }
 
-    public IDogRepository DogRepository
+    public IPetRepository PetRepository
     {
         get
         {
-            if (_dogRepository == null)
+            if (_petRepository == null)
             {
-                _dogRepository = new DogRepository(_furEverTogetherDbContext);
+                _petRepository = new PetRepository(_furEverTogetherDbContext);
             }
 
-            return _dogRepository;
+            return _petRepository;
         }
     }
 

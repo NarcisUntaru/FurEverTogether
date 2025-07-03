@@ -9,9 +9,8 @@ namespace FurEver_Together.Infrastructure
         public MappingProfile()
         {
             CreateMap<Adoption, AdoptionViewModel>().ReverseMap();
-            CreateMap<Cat, CatViewModel>().ReverseMap();
+            CreateMap<Pet, PetViewModel>().ReverseMap();
             CreateMap<ContactUs, ContactUsViewModel>().ReverseMap();
-            CreateMap<Dog, DogViewModel>().ReverseMap();
             CreateMap<User, UserViewModel>().ReverseMap();
             CreateMap<Volunteer, VolunteerViewModel>().ReverseMap();
         }

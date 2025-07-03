@@ -6,7 +6,7 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: rgba(251, 234, 235, 0.5);
+    background-color: rgba(251, 234, 235, 0.90);
 }
 
 .box
@@ -48,4 +48,27 @@
 {
     font-weight: bold;
     color: #2F3C7E;
+}
+
+.centered-title
+{
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px auto;
+    line-height: 1.2;
+    color: #2F3C7E;
+    padding-top: 10px; /* optional */
+}
+
+.content p
+{
+    font-size: 1.25rem; /* Makes paragraph text bigger */
+    line-height: 1.6; /* Optional: improves readability */
+}
+
+.highlighted-text
+{
+    font-weight: bold;
+    color: #2F3C7E; /* Example color: a warm red, you can change to any color you like */
 }

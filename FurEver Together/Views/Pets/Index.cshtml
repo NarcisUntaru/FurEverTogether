@@ -1,0 +1,113 @@
+﻿@model IEnumerable<FurEver_Together.DataModels.Pet>
+@using FurEver_Together.Enums
+@{
+    var typeParam = Context.Request.Query["type"].ToString();
+    string petType = string.IsNullOrEmpty(typeParam) ? "Pets" : typeParam + "s";
+}
+@{
+    ViewData["Title"] = "Pets";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/dogs.css" />
+    <title>@ViewData["Title"]</title>
+
+    <script>
+        function handleImageError(image) {
+            image.style.display = 'none';
+            var noImageText = document.createElement('div');
+            noImageText.textContent = 'No Image';
+            noImageText.className = 'no-image-text';
+            image.parentNode.appendChild(noImageText);
+        }
+    </script>
+</head>
+<body>
+
+    <div class="pet-container">
+        <h1 style="text-align: center; color: #2F3C7E;">
+            Available <span style="color: #5561A9;">@petType</span> for adoption
+        </h1>
+        <div class="filter-wrapper">
+            <div class="filter-container">
+                <div class="filter-label">Filter by:</div>
+                <div class="select">
+                    <div class="selected"
+                         data-default="All"
+                         data-one="Name (A-Z)"
+                         data-two="Name (Z-A)"
+                         data-three="Others">
+                    </div>
+                    <div class="options">
+                        <div title="all">
+                            <input id="all" name="option" type="radio" checked />
+                            <label class="option" for="all" data-txt="All"></label>
+                        </div>
+                        <div title="NameAsc">
+                            <input id="option-1" name="option" type="radio" />
+                            <label class="option" for="option-1" data-txt="Name (A-Z)"></label>
+                        </div>
+                        <div title="NameDesc">
+                            <input id="option-2" name="option" type="radio" />
+                            <label class="option" for="option-2" data-txt="Name (Z-A)"></label>
+                        </div>
+                        <div title="Others">
+                            <input id="option-3" name="option" type="radio" />
+                            <label class="option" for="option-3" data-txt="Others"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="match-description">
+                Below you can see all the pets that match your personality.<br>
+                These shown results match with you for at least <strong>50%</strong>.
+            </div>
+        </div>
+        <div class="pet-card-container">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var pet in Model)
+                {
+                    <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="pet-card">
+                        <img src="@pet.PictureUrl" alt="No Image" class="pet-image"
+                             onerror="this.onerror=null; this.src='@Url.Content("~/uploads/Animals/no-image-available-pets.jpg")';" />
+                        <div class="pet-name">@pet.Name</div>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="no-pets-message" style="text-align:center; padding: 20px; font-size: 1.2em; color: #555;">
+                    Sorry, no pets are currently available for adoption.
+                </div>
+            }
+        </div>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function updateSort(sortOrder) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('sortOrder', sortOrder);
+            // keep other query params as is
+            window.location.href = url.toString();
+        }
+
+        const option1 = document.getElementById("option-1");
+        const option2 = document.getElementById("option-2");
+
+        option1.addEventListener("change", function () {
+            if (this.checked) updateSort('name_asc');
+        });
+
+        option2.addEventListener("change", function () {
+            if (this.checked) updateSort('name_desc');
+        });
+    });
+</script>
+
+</html>

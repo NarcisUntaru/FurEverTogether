@@ -1,13 +1,16 @@
-﻿@{
+﻿@model FurEver_Together.ViewModels.VolunteerViewModel
+
+@{
     ViewData["Title"] = "Volunteer";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href=".\css\volunteer.css">
-    <title>Volunteer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href=".\css\volunteer.css" />
+    <title>@ViewData["Title"]</title>
 </head>
 <body>
     <div class="volunteer-container">
@@ -16,16 +19,108 @@
             <div class="center-text">
                 <p>Thank you for your interest in volunteering at FurEver Together Animal Adoption Center! Please fill out the form below to get started.</p>
             </div>
+
             <form asp-action="Add" method="post">
-                <div class="form-group">
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="Message" rows="5" placeholder="Enter your message here"></textarea>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Full Name -->
+                <div class="form-group center-text">
+                    <label for="FullName">Full Name</label>
+                    <input asp-for="FullName" id="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
+
+                <!-- Phone Number -->
+                <div class="form-group center-text">
+                    <label for="PhoneNumber">Phone Number</label>
+                    <input asp-for="PhoneNumber" id="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group center-text">
+                    <label for="HoursPerWeek">How many hours can you volunteer per week?</label>
+                    <input asp-for="HoursPerWeek" type="range" min="1" max="40" step="1" id="HoursPerWeekSlider" class="form-range" />
+                    <div>
+                        <span id="HoursValue">@Model.HoursPerWeek</span> hours/week
+                    </div>
+                    <span asp-validation-for="HoursPerWeek" class="text-danger"></span>
+                </div>
+
+                <div class="form-group center-text">
+                    <label asp-for="Message"></label>
+                    <textarea asp-for="Message" rows="5" class="form-control"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
+
+                <!-- Radio button questions -->
+
                 <div class="form-group">
-                    <button type="submit">Submit</button>
+                    <label>Do you have transportation available during the volunteering program?</label>
+                    <div class="radio-group">
+                        <input type="radio" asp-for="TransportationAvailable" value="true" id="transportYes" />
+                        <label for="transportYes">Yes</label>
+
+                        <input type="radio" asp-for="TransportationAvailable" value="false" id="transportNo" />
+                        <label for="transportNo">No</label>
+                    </div>
+                    <span asp-validation-for="TransportationAvailable" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Do you have any previous experience regarding pet adopting facilities volunteering?</label>
+                    <div class="radio-group">
+                        <input type="radio" asp-for="PreviousExperience" value="true" id="experienceYes" />
+                        <label for="experienceYes">Yes</label>
+
+                        <input type="radio" asp-for="PreviousExperience" value="false" id="experienceNo" />
+                        <label for="experienceNo">No</label>
+                    </div>
+                    <span asp-validation-for="PreviousExperience" class="text-danger"></span>
+                </div>
+
+                <div class="form-group form-check terms" style="text-align: left; margin-top: 30px;">
+                    <input asp-for="IsOver18" class="form-check-input" id="agreementCombined" />
+                    <label asp-for="IsOver18" class="form-check-label" for="agreementCombined">
+                        I confirm that I am over 18 years old.
+                    </label>
+                    <span asp-validation-for="IsOver18" class="text-danger"></span>
+                </div>
+
+                <!-- Terms and conditions -->
+                <div class="form-group form-check terms">
+                    <input asp-for="AgreementToTerms" class="form-check-input" id="agreement" />
+                    <label asp-for="AgreementToTerms" class="form-check-label" for="agreement">
+                        I agree with the terms and conditions.
+                    </label>
+                    <span asp-validation-for="AgreementToTerms" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>
     </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const slider = document.getElementById("HoursPerWeekSlider");
+                const valueDisplay = document.getElementById("HoursValue");
+
+                if (slider && valueDisplay) {
+                    valueDisplay.textContent = slider.value;
+
+                    slider.addEventListener("input", function () {
+                        valueDisplay.textContent = this.value;
+                    });
+                }
+            });
+
+
+        </script>
+    }
+
+    }
 </body>
 </html>
