@@ -26,52 +26,28 @@ namespace FurEver_Together.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (_volunteerService.HasSubmitted(userId))
-            {
-                return View("AlreadyApplied");
-            }
-            var viewModel = new VolunteerViewModel
-            {
-                HoursPerWeek = 1
-            };
-            return View(viewModel);
+            var userId = GetCurrentUserId();
+            return _volunteerService.HasSubmitted(userId)
+                ? View("AlreadyApplied")
+                : View(CreateDefaultViewModel());
         }
+
         [Authorize]
         public IActionResult Details(int id)
         {
             var volunteer = _volunteerService.GetById(id);
+            var authResult = ValidateVolunteerAccess(volunteer);
 
-            if (volunteer == null)
-            {
-                return NotFound();
-            }
-
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (volunteer.UserId != currentUserId)
-            {
-                return Forbid();
-            }
-
-            var viewModel = _mapper.Map<VolunteerViewModel>(volunteer);
-            return View(viewModel);
+            return authResult ?? View(_mapper.Map<VolunteerViewModel>(volunteer));
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult Add(VolunteerViewModel volunteerViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                var volunteer = _mapper.Map<Volunteer>(volunteerViewModel);
-                volunteer.Status = ApplicationStatus.Pending;
-                volunteer.RequestDate = DateTime.Now;
-                volunteer.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                _volunteerService.Add(volunteer);
-                return RedirectToAction("Index");
-            }
-
-            return View("Index", volunteerViewModel);
+            return ModelState.IsValid
+                ? ProcessVolunteerAddition(volunteerViewModel)
+                : View("Index", volunteerViewModel);
         }
 
         [HttpPost]
@@ -79,51 +55,20 @@ namespace FurEver_Together.Controllers
         public IActionResult Delete(int id)
         {
             var volunteer = _volunteerService.GetById(id);
+            var authResult = ValidateVolunteerAccess(volunteer);
 
-            if (volunteer == null)
-            {
-                return NotFound();
-            }
-
-            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (volunteer.UserId != currentUserId)
-            {
-                return Forbid();
-            }
-
-            _volunteerService.Delete(id);
-            return RedirectToAction("Index");
+            return authResult ?? ExecuteDelete(id);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Approve(int id)
         {
             var volunteer = await _volunteerService.GetByIdAsync(id);
-            if (volunteer == null)
-            {
-                return NotFound();
-            }
-
-            volunteer.Status = ApplicationStatus.Approved;
-            volunteer.RespondDate = DateTime.Now;
-
-            await _volunteerService.UpdateAsync(volunteer);
-
-            string message = "Great news! Your volunteer application has been approved, and we are excited to welcome you to our team. Our coordinators will contact you shortly with the next steps and more details about your involvement. Thank you for your willingness to help and make a difference!";
-            string subject = "Volunteer Application Approved";
-            string body = $@"
-        <p>{message}</p>
-        <p><strong>Volunteer Name:</strong> {volunteer.FullName}</p>
-        <p><strong>Application ID:</strong> {volunteer.Id}</p>
-        <p><strong>Status:</strong> Approved</p>
-        <p><strong>Date:</strong> {DateTime.Now}</p>
-    ";
-
-            // Hardcoded email
-            await _emailService.SendEmailAsync("narcis.alexandru02@gmail.com", subject, body);
-
-            return Redirect("/Identity/Account/Manage#admin-panel");
+            return volunteer == null
+                ? NotFound()
+                : await ProcessStatusChange(volunteer, ApplicationStatus.Approved, GetApprovalEmailContent());
         }
 
         [HttpPost]
@@ -132,31 +77,81 @@ namespace FurEver_Together.Controllers
         public async Task<IActionResult> Reject(int id)
         {
             var volunteer = await _volunteerService.GetByIdAsync(id);
-            if (volunteer == null)
-            {
-                return NotFound();
-            }
+            return volunteer == null
+                ? NotFound()
+                : await ProcessStatusChange(volunteer, ApplicationStatus.Rejected, GetRejectionEmailContent());
+        }
 
-            volunteer.Status = ApplicationStatus.Rejected;
+        // Private helper methods
+        private string GetCurrentUserId() => User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        private VolunteerViewModel CreateDefaultViewModel() => new VolunteerViewModel { HoursPerWeek = 1 };
+
+        private IActionResult ValidateVolunteerAccess(Volunteer volunteer)
+        {
+            return volunteer == null ? NotFound()
+                : volunteer.UserId != GetCurrentUserId() ? Forbid()
+                : null;
+        }
+
+        private IActionResult ProcessVolunteerAddition(VolunteerViewModel volunteerViewModel)
+        {
+            var volunteer = _mapper.Map<Volunteer>(volunteerViewModel);
+            volunteer.Status = ApplicationStatus.Pending;
+            volunteer.RequestDate = DateTime.Now;
+            volunteer.UserId = GetCurrentUserId();
+            _volunteerService.Add(volunteer);
+            return RedirectToAction("Index");
+        }
+
+        private IActionResult ExecuteDelete(int id)
+        {
+            _volunteerService.Delete(id);
+            return RedirectToAction("Index");
+        }
+
+        private async Task<IActionResult> ProcessStatusChange(Volunteer volunteer, ApplicationStatus status, EmailContent emailContent)
+        {
+            volunteer.Status = status;
             volunteer.RespondDate = DateTime.Now;
-
             await _volunteerService.UpdateAsync(volunteer);
-
-            string message = "We regret to inform you that, after careful consideration, your volunteer application has not been approved at this time. We appreciate your interest and hope you will consider applying again in the future.";
-            string subject = "Volunteer Application Rejected";
-            string body = $@"
-        <p>{message}</p>
-        <p><strong>Volunteer Name:</strong> {volunteer.FullName}</p>
-        <p><strong>Application ID:</strong> {volunteer.Id}</p>
-        <p><strong>Status:</strong> Rejected</p>
-        <p><strong>Date:</strong> {DateTime.Now}</p>
-    ";
-
-            // Hardcoded email
-            await _emailService.SendEmailAsync("narcis.alexandru02@gmail.com", subject, body);
-
+            await SendStatusEmail(volunteer, emailContent);
             return Redirect("/Identity/Account/Manage#admin-panel");
         }
 
+        private async Task SendStatusEmail(Volunteer volunteer, EmailContent content)
+        {
+            string body = BuildEmailBody(content.Message, volunteer);
+            await _emailService.SendEmailAsync("narcis.alexandru02@gmail.com", content.Subject, body);
+        }
+
+        private string BuildEmailBody(string message, Volunteer volunteer)
+        {
+            return $@"
+                <p>{message}</p>
+                <p><strong>Volunteer Name:</strong> {volunteer.FullName}</p>
+                <p><strong>Application ID:</strong> {volunteer.Id}</p>
+                <p><strong>Status:</strong> {volunteer.Status}</p>
+                <p><strong>Date:</strong> {DateTime.Now}</p>
+            ";
+        }
+
+        private EmailContent GetApprovalEmailContent() => new EmailContent
+        {
+            Subject = "Volunteer Application Approved",
+            Message = "Great news! Your volunteer application has been approved, and we are excited to welcome you to our team. Our coordinators will contact you shortly with the next steps and more details about your involvement. Thank you for your willingness to help and make a difference!"
+        };
+
+        private EmailContent GetRejectionEmailContent() => new EmailContent
+        {
+            Subject = "Volunteer Application Rejected",
+            Message = "We regret to inform you that, after careful consideration, your volunteer application has not been approved at this time. We appreciate your interest and hope you will consider applying again in the future."
+        };
+
+        private class EmailContent
+        {
+            public string Subject { get; set; }
+            public string Message { get; set; }
+        }
     }
 }
