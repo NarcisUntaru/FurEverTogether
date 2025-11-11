@@ -7,11 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace FurEver_Together.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.cs
-    public partial class MySQL : Migration
-========
     public partial class Initial : Migration
->>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250516185024_Initial.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,7 +31,6 @@ namespace FurEver_Together.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.cs
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -104,38 +99,6 @@ namespace FurEver_Together.Migrations
                     table.PrimaryKey("PK_Pets", x => x.PetId);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
-========
-                name: "Pets",
-                columns: table => new
-                {
-                    PetId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Breed = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ArrivalDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAdopted = table.Column<bool>(type: "bit", nullable: false),
-                    PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Personality_EnergyLevel = table.Column<int>(type: "int", nullable: false),
-                    Personality_Sociability = table.Column<int>(type: "int", nullable: false),
-                    Personality_AffectionLevel = table.Column<int>(type: "int", nullable: false),
-                    Personality_Trainability = table.Column<int>(type: "int", nullable: false),
-                    Personality_Playfulness = table.Column<int>(type: "int", nullable: false),
-                    Personality_AggressionLevel = table.Column<int>(type: "int", nullable: false),
-                    Personality_NoiseLevel = table.Column<int>(type: "int", nullable: false),
-                    Personality_GoodWithKids = table.Column<int>(type: "int", nullable: false),
-                    Personality_GoodWithOtherPets = table.Column<int>(type: "int", nullable: false),
-                    Personality_Adaptability = table.Column<int>(type: "int", nullable: false),
-                    Personality_AnxietyLevel = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pets", x => x.PetId);
-                });
->>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250516185024_Initial.cs
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
@@ -156,76 +119,8 @@ namespace FurEver_Together.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.cs
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
-========
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Adoptions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AdoptionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FreeTransportation = table.Column<bool>(type: "bit", nullable: false),
-                    AdoptionStory = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PetId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Adoptions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Adoptions_Pets_PetId",
-                        column: x => x.PetId,
-                        principalTable: "Pets",
-                        principalColumn: "PetId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AdoptionId = table.Column<int>(type: "int", nullable: true),
-                    Preferences_EnergyLevel = table.Column<int>(type: "int", nullable: false),
-                    Preferences_Sociability = table.Column<int>(type: "int", nullable: false),
-                    Preferences_AffectionLevel = table.Column<int>(type: "int", nullable: false),
-                    Preferences_Trainability = table.Column<int>(type: "int", nullable: false),
-                    Preferences_Playfulness = table.Column<int>(type: "int", nullable: false),
-                    Preferences_AggressionLevel = table.Column<int>(type: "int", nullable: false),
-                    Preferences_NoiseLevel = table.Column<int>(type: "int", nullable: false),
-                    Preferences_GoodWithKids = table.Column<int>(type: "int", nullable: false),
-                    Preferences_GoodWithOtherPets = table.Column<int>(type: "int", nullable: false),
-                    Preferences_Adaptability = table.Column<int>(type: "int", nullable: false),
-                    Preferences_AnxietyLevel = table.Column<int>(type: "int", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Adoptions_AdoptionId",
-                        column: x => x.AdoptionId,
-                        principalTable: "Adoptions",
-                        principalColumn: "Id");
-                });
->>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250516185024_Initial.cs
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
@@ -403,14 +298,11 @@ namespace FurEver_Together.Migrations
                 table: "Adoptions",
                 column: "PetId",
                 unique: true);
-<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.cs
 
             migrationBuilder.CreateIndex(
                 name: "IX_Adoptions_UserId",
                 table: "Adoptions",
                 column: "UserId");
-========
->>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250516185024_Initial.cs
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -444,16 +336,6 @@ namespace FurEver_Together.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.cs
-========
-                name: "IX_AspNetUsers_AdoptionId",
-                table: "AspNetUsers",
-                column: "AdoptionId",
-                unique: true,
-                filter: "[AdoptionId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
->>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250516185024_Initial.cs
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -506,15 +388,6 @@ namespace FurEver_Together.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.cs
-========
-
-            migrationBuilder.DropTable(
-                name: "Adoptions");
-
-            migrationBuilder.DropTable(
-                name: "Pets");
->>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250516185024_Initial.cs
         }
     }
 }

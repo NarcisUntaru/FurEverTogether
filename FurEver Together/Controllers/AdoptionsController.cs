@@ -19,7 +19,6 @@ namespace FurEver_Together.Controllers
         private readonly IPetService _petService;
         private readonly IMatchingService _matchingService;
         private readonly UserManager<User> _userManager;
-        private readonly IPdfExportService _pdfExportService;
         private readonly EmailService _emailService;
 
 
@@ -35,7 +34,6 @@ namespace FurEver_Together.Controllers
             _adoptionService = adoptionService;
             _petService = petService;
             _userManager = userManager;
-            _pdfExportService = pdfExportService;
             _emailService = emailService;
         }
 
