@@ -34,7 +34,6 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* background-color: rgba(47, 60, 126, 0.9); */
     background-color: #FBEAEB;
 }
 
@@ -48,6 +47,7 @@
 {
     font-weight: bold;
     color: #2F3C7E;
+    font-size: 25px;
 }
 
 .centered-title
@@ -58,17 +58,28 @@
     margin: 10px auto;
     line-height: 1.2;
     color: #2F3C7E;
-    padding-top: 10px; /* optional */
+    padding-top: 10px;
 }
 
 .content p
 {
-    font-size: 1.25rem; /* Makes paragraph text bigger */
-    line-height: 1.6; /* Optional: improves readability */
+
+    line-height: 1.6; 
 }
 
 .highlighted-text
 {
     font-weight: bold;
-    color: #2F3C7E; /* Example color: a warm red, you can change to any color you like */
+    color: #2F3C7E;
+    font-size: 2rem; 
+}
+
+.intro-paragraph
+{
+    font-size: 1.5rem; 
+    line-height: 1.6;
+    color: #333333;
+    margin-top: 90px;
+    margin-bottom: 20px;
+    max-width: 800px;
 }

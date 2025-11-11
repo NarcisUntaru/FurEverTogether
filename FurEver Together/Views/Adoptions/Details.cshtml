@@ -42,18 +42,6 @@
             </div>
         </div>
 
-        <div class="actions">
-            @if (Model.Status == ApplicationStatus.Pending)
-            {
-                <form asp-action="Approve" asp-controller="Adoptions" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <button type="submit" class="btn approve-button">Approve</button>
-                </form>
-                <form asp-action="Reject" asp-controller="Adoptions" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="@Model.Id" />
-                <button type="submit" class="btn reject-button">Reject</button>
-            </form>
-            }
-        </div>
+
     </div>
 </body>
