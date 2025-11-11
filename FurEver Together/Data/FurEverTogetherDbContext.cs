@@ -24,7 +24,7 @@ public partial class FurEverTogetherDbContext : IdentityDbContext<User>
     public DbSet<PersonalityProfile> PersonalityProfiles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-     => optionsBuilder.UseSqlServer("Name=ConnectionStrings:FurEverTogetherDb");
+     => optionsBuilder.UseMySQL("Name=ConnectionStrings:FurEverTogetherDb");
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

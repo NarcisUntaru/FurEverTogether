@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
 {
@@ -39,9 +41,15 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public Volunteer VolunteerApplication { get; set; }
+        public List<Pet> Pets { get; set; }
         public PersonalityProfile? Personality { get; set; }
-        public List<Adoption> AdoptionRequests { get; set; }
+        public List<Adoption> UserAdoptionRequests { get; set; }
+        public List<Adoption> AllAdoptionRequests { get; set; }
+        public List<Volunteer> UserVolunteerApplications { get; set; }
+        public List<Volunteer> AllVolunteerApplications { get; set; }
+
+      
+        public List<User> Users { get; set; }
 
         public class InputModel
         {
@@ -62,12 +70,13 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
                 PhoneNumber = phoneNumber
             };
 
-            VolunteerApplication = await _furEverTogetherDbContext.Volunteers
-                .FirstOrDefaultAsync(v => v.UserId == user.Id);
+            UserVolunteerApplications = await _furEverTogetherDbContext.Volunteers
+    .Where(v => v.UserId == user.Id)
+    .ToListAsync();
 
             var userWithPreferences = await _furEverTogetherDbContext.Users
-        .Include(u => u.Preferences) 
-        .FirstOrDefaultAsync(u => u.Id == user.Id);
+                .Include(u => u.Preferences)
+                .FirstOrDefaultAsync(u => u.Id == user.Id);
 
             Personality = userWithPreferences?.Preferences;
         }
@@ -79,10 +88,35 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            AdoptionRequests = await _furEverTogetherDbContext.Adoptions
-            .Include(a => a.Pet)
-            .Include(a => a.User)
-            .ToListAsync();
+
+            // User-specific adoption requests
+            UserAdoptionRequests = await _furEverTogetherDbContext.Adoptions
+                .Include(a => a.Pet)
+                .Where(a => a.UserId == user.Id)
+                .ToListAsync();
+
+            // User-specific volunteer applications
+            UserVolunteerApplications = await _furEverTogetherDbContext.Volunteers
+                .Where(v => v.UserId == user.Id)
+                .ToListAsync();
+
+            if (await _userManager.IsInRoleAsync(user, "Administrator"))
+            {
+                // Admin sees all adoption requests
+                AllAdoptionRequests = await _furEverTogetherDbContext.Adoptions
+                    .Include(a => a.Pet)
+                    .ToListAsync();
+
+                // Admin sees all volunteer applications
+                AllVolunteerApplications = await _furEverTogetherDbContext.Volunteers
+                    .ToListAsync();
+
+                // Admin also sees all users
+                Users = await _userManager.Users.ToListAsync();
+            }
+
+            Pets = await _furEverTogetherDbContext.Pets.ToListAsync();
+
             await LoadAsync(user);
             return Page();
         }

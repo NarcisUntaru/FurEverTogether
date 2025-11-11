@@ -14,11 +14,13 @@ namespace FurEver_Together.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IVolunteerService _volunteerService;
+        private readonly EmailService _emailService;
 
-        public VolunteerController(IMapper mapper, IVolunteerService volunteerService)
+        public VolunteerController(IMapper mapper, IVolunteerService volunteerService, EmailService emailService)
         {
             _mapper = mapper;
             _volunteerService = volunteerService;
+            _emailService = emailService;
         }
 
         [Authorize]
@@ -93,10 +95,11 @@ namespace FurEver_Together.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        [Authorize(Roles = "Administrator")] // or appropriate roles
-        public IActionResult Approve(int id)
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Approve(int id)
         {
-            var volunteer = _volunteerService.GetById(id);
+            var volunteer = await _volunteerService.GetByIdAsync(id);
             if (volunteer == null)
             {
                 return NotFound();
@@ -104,15 +107,31 @@ namespace FurEver_Together.Controllers
 
             volunteer.Status = ApplicationStatus.Approved;
             volunteer.RespondDate = DateTime.Now;
-            _volunteerService.Update(volunteer);
-            return RedirectToAction("Index", "Volunteer");
+
+            await _volunteerService.UpdateAsync(volunteer);
+
+            string message = "Great news! Your volunteer application has been approved, and we are excited to welcome you to our team. Our coordinators will contact you shortly with the next steps and more details about your involvement. Thank you for your willingness to help and make a difference!";
+            string subject = "Volunteer Application Approved";
+            string body = $@"
+        <p>{message}</p>
+        <p><strong>Volunteer Name:</strong> {volunteer.FullName}</p>
+        <p><strong>Application ID:</strong> {volunteer.Id}</p>
+        <p><strong>Status:</strong> Approved</p>
+        <p><strong>Date:</strong> {DateTime.Now}</p>
+    ";
+
+            // Hardcoded email
+            await _emailService.SendEmailAsync("narcis.alexandru02@gmail.com", subject, body);
+
+            return Redirect("/Identity/Account/Manage#admin-panel");
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public IActionResult Reject(int id)
+        public async Task<IActionResult> Reject(int id)
         {
-            var volunteer = _volunteerService.GetById(id);
+            var volunteer = await _volunteerService.GetByIdAsync(id);
             if (volunteer == null)
             {
                 return NotFound();
@@ -120,8 +139,24 @@ namespace FurEver_Together.Controllers
 
             volunteer.Status = ApplicationStatus.Rejected;
             volunteer.RespondDate = DateTime.Now;
-            _volunteerService.Update(volunteer); //
-            return RedirectToAction("Index", "Volunteer");
+
+            await _volunteerService.UpdateAsync(volunteer);
+
+            string message = "We regret to inform you that, after careful consideration, your volunteer application has not been approved at this time. We appreciate your interest and hope you will consider applying again in the future.";
+            string subject = "Volunteer Application Rejected";
+            string body = $@"
+        <p>{message}</p>
+        <p><strong>Volunteer Name:</strong> {volunteer.FullName}</p>
+        <p><strong>Application ID:</strong> {volunteer.Id}</p>
+        <p><strong>Status:</strong> Rejected</p>
+        <p><strong>Date:</strong> {DateTime.Now}</p>
+    ";
+
+            // Hardcoded email
+            await _emailService.SendEmailAsync("narcis.alexandru02@gmail.com", subject, body);
+
+            return Redirect("/Identity/Account/Manage#admin-panel");
         }
+
     }
 }

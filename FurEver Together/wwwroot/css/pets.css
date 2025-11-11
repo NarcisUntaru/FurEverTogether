@@ -1,7 +1,7 @@
 ﻿.pet-details-container
 {
     display: flex;
-    flex-direction: row; /* side-by-side left and right columns */
+    flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     background-color: rgba(251, 234, 235, 0.90);
@@ -40,14 +40,14 @@
             color: #2F3C7E;
         }
 
-        /* NEW: center the image and basic details vertically in the remaining space */
+
         .pet-details-container .left-column .image-and-basics
         {
             display: flex;
             gap: 20px;
-            align-items: center; /* vertically center the image and details */
-            justify-content: flex-start; /* align them left horizontally */
-            flex-grow: 1; /* take all available vertical space */
+            align-items: center; 
+            justify-content: flex-start; 
+            flex-grow: 1; 
         }
 
         .pet-details-container .left-column .image-container img
@@ -222,7 +222,13 @@
     background-color: #4CAF50;
 }
 
-.delete-button
+.no-pets-message
 {
-    background-color: #f44336;
+    width: 100%; /* Make it full width */
+    text-align: center; /* Center the text inside */
+    padding: 20px;
+    font-size: 1.5rem;
+    color: #666666;
+    font-weight: 600;
+    display: block; /* Ensure it behaves like a block */
 }

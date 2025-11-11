@@ -5,7 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using FurEver_Together.Services.Interfaces;
 using System.Security.Claims;
-using System.Threading.Tasks;  // Add this for async support
+using System.Threading.Tasks;  
 
 namespace FurEver_Together.Controllers
 {
@@ -13,7 +13,7 @@ namespace FurEver_Together.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IContactUsService _contactUsService;
-        private readonly EmailService _emailService;  // inject EmailService
+        private readonly EmailService _emailService; 
 
         public ContactUsController(IMapper mapper, IContactUsService contactUsService, EmailService emailService)
         {

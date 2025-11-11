@@ -23,7 +23,7 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<FurEverTogetherDbContext>();
 builder.Services.AddDbContext<FurEverTogetherDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FurEverTogetherDb")));
+    options.UseMySQL(builder.Configuration.GetConnectionString("FurEverTogetherDb")));
 
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddSingleton<IConverter>(new SynchronizedConverter(new PdfTools()));

@@ -51,6 +51,8 @@
         </div>
 
         <div class="actions">
+           @if (Model.Status == ApplicationStatus.Pending)
+            {
             <form asp-action="Approve" asp-controller="Volunteer" asp-route-id="@Model.Id" method="post" style="display:inline;">
                 <button type="submit" class="btn approve-button">Approve</button>
             </form>
@@ -58,6 +60,7 @@
             <form asp-action="Reject" asp-controller="Volunteer" asp-route-id="@Model.Id" method="post" style="display:inline;">
                 <button type="submit" class="btn reject-button">Reject</button>
             </form>
+            }
         </div>
     </div>
 </body>

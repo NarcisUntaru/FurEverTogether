@@ -44,21 +44,17 @@
             <div class="extra-info-box">
                 <p class="match-label">Your personality matches with a percentage of:</p>
                 <p class="match-percentage">@((int)Math.Round((double)ViewData["MatchPercentage"]))%</p>
+                @if (!Model.IsAdopted)
+                {
                 <form method="post" asp-controller="Adoptions" asp-action="Adopt" asp-route-petId="@Model.PetId">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="adopt-button">ADOPT NOW</button>
                 </form>
-            </div>
-            @if (User.IsInRole("Administrator"))
+                }
+                else
             {
-                <div class="admin-buttons">
-                    <a class="edit-button" asp-controller="Pets" asp-action="Edit" asp-route-id="@Model.PetId">Edit</a>
-                    <form method="post" asp-controller="Pets" asp-action="Delete" asp-route-id="@Model.PetId"
-                          onsubmit="return confirm('Are you sure you want to delete this pet?');"
-                          style="display:inline;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="delete-button">Delete</button>
-                    </form>
+                    <p class="adopted-label">This pet has already found a lovely family.</p>
+                }
                 </div>
             }
     </div>

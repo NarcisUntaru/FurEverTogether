@@ -3,7 +3,6 @@ using System;
 using FurEver_Together.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -12,18 +11,21 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FurEver_Together.Migrations
 {
     [DbContext(typeof(FurEverTogetherDbContext))]
-    [Migration("20250518211202_VolunteerStatus")]
-    partial class VolunteerStatus
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+    [Migration("20250702210932_MySQL")]
+    partial class MySQL
+========
+    [Migration("20250517225411_VolunteerModify")]
+    partial class VolunteerModify
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+                .HasAnnotation("ProductVersion", "8.0.14")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("FurEver_Together.DataModels.Adoption", b =>
                 {
@@ -31,8 +33,23 @@ namespace FurEver_Together.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("AdoptionDate")
+                        .HasColumnType("datetime(6)");
 
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+                    b.Property<int>("PetId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("RequestDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+========
                     b.Property<DateTime>("AdoptionDate")
                         .HasColumnType("datetime2");
 
@@ -46,11 +63,17 @@ namespace FurEver_Together.Migrations
                     b.Property<int>("PetId")
                         .HasColumnType("int");
 
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
                     b.HasKey("Id");
 
                     b.HasIndex("PetId")
                         .IsUnique();
 
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+                    b.HasIndex("UserId");
+
+========
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
                     b.ToTable("Adoptions");
                 });
 
@@ -60,15 +83,13 @@ namespace FurEver_Together.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -83,6 +104,13 @@ namespace FurEver_Together.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ArrivalDate")
+                        .HasColumnType("datetime(6)");
+========
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PetId"));
 
                     b.Property<int>("Age")
@@ -90,29 +118,34 @@ namespace FurEver_Together.Migrations
 
                     b.Property<DateTime>("ArrivalDate")
                         .HasColumnType("datetime2");
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
 
                     b.Property<string>("Breed")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Gender")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("IsAdopted")
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+                        .HasColumnType("tinyint(1)");
+========
                         .HasColumnType("bit");
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PictureUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -125,71 +158,76 @@ namespace FurEver_Together.Migrations
             modelBuilder.Entity("FurEver_Together.DataModels.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+========
                     b.Property<int?>("AdoptionId")
                         .HasColumnType("int");
 
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+========
                     b.HasIndex("AdoptionId")
                         .IsUnique()
                         .HasFilter("[AdoptionId] IS NOT NULL");
 
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -200,7 +238,18 @@ namespace FurEver_Together.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<bool>("AgreementToTerms")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("HoursPerWeek")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsOver18")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("AgreementToTerms")
                         .HasColumnType("bit");
@@ -217,7 +266,26 @@ namespace FurEver_Together.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("PreviousExperience")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("RequestDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("RespondDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("TransportationAvailable")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -226,16 +294,12 @@ namespace FurEver_Together.Migrations
                     b.Property<bool>("PreviousExperience")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("TransportationAvailable")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -248,26 +312,25 @@ namespace FurEver_Together.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
@@ -278,17 +341,15 @@ namespace FurEver_Together.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -303,17 +364,15 @@ namespace FurEver_Together.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -326,18 +385,18 @@ namespace FurEver_Together.Migrations
                 {
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ProviderKey")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -349,10 +408,10 @@ namespace FurEver_Together.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -364,18 +423,18 @@ namespace FurEver_Together.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("LoginProvider")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -387,10 +446,24 @@ namespace FurEver_Together.Migrations
                     b.HasOne("FurEver_Together.DataModels.Pet", "Pet")
                         .WithOne("Adoption")
                         .HasForeignKey("FurEver_Together.DataModels.Adoption", "PetId")
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FurEver_Together.DataModels.User", "User")
+                        .WithMany("Adoptions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Pet");
+
+                    b.Navigation("User");
+========
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Pet");
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
                 });
 
             modelBuilder.Entity("FurEver_Together.DataModels.ContactUs", b =>
@@ -458,6 +531,53 @@ namespace FurEver_Together.Migrations
 
             modelBuilder.Entity("FurEver_Together.DataModels.User", b =>
                 {
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+                    b.OwnsOne("FurEver_Together.DataModels.PersonalityProfile", "Preferences", b1 =>
+                        {
+                            b1.Property<string>("UserId")
+                                .HasColumnType("varchar(255)");
+
+                            b1.Property<int>("Adaptability")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("AffectionLevel")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("AggressionLevel")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("AnxietyLevel")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("EnergyLevel")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("GoodWithKids")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("GoodWithOtherPets")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("NoiseLevel")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Playfulness")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Sociability")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Trainability")
+                                .HasColumnType("int");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("AspNetUsers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+========
                     b.HasOne("FurEver_Together.DataModels.Adoption", "Adoption")
                         .WithOne("User")
                         .HasForeignKey("FurEver_Together.DataModels.User", "AdoptionId");
@@ -509,6 +629,7 @@ namespace FurEver_Together.Migrations
                         });
 
                     b.Navigation("Adoption");
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
 
                     b.Navigation("Preferences")
                         .IsRequired();
@@ -576,12 +697,15 @@ namespace FurEver_Together.Migrations
                         .IsRequired();
                 });
 
+<<<<<<<< HEAD:FurEver Together/Migrations/20250702210932_MySQL.Designer.cs
+========
             modelBuilder.Entity("FurEver_Together.DataModels.Adoption", b =>
                 {
                     b.Navigation("User")
                         .IsRequired();
                 });
 
+>>>>>>>> 18989e56a5395a8cfd1c6b6a71057581bf593b2b:FurEver Together/Migrations/20250517225411_VolunteerModify.Designer.cs
             modelBuilder.Entity("FurEver_Together.DataModels.Pet", b =>
                 {
                     b.Navigation("Adoption")
@@ -590,6 +714,8 @@ namespace FurEver_Together.Migrations
 
             modelBuilder.Entity("FurEver_Together.DataModels.User", b =>
                 {
+                    b.Navigation("Adoptions");
+
                     b.Navigation("ContactMessages");
 
                     b.Navigation("Volunteer")

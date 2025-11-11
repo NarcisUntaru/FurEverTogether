@@ -28,6 +28,10 @@ namespace FurEver_Together.Services
             return _repositoryWrapper.VolunteerRepository.GetAll()
                 .FirstOrDefault(v => v.Id == id);
         }
+        public async Task<Volunteer> GetByIdAsync(int id)
+        {
+            return await _repositoryWrapper.VolunteerRepository.GetByIdAsync(id);
+        }
 
         public void Delete(int id)
         {
@@ -46,6 +50,11 @@ namespace FurEver_Together.Services
         {
             _repositoryWrapper.VolunteerRepository.Update(volunteer);
             _repositoryWrapper.Save();
+        }
+        public async Task UpdateAsync(Volunteer volunteer)
+        {
+            _repositoryWrapper.VolunteerRepository.Update(volunteer);
+            await _repositoryWrapper.SaveAsync();
         }
     }
 }

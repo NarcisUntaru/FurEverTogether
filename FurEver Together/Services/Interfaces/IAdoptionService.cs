@@ -1,4 +1,5 @@
 ﻿using FurEver_Together.DataModels;
+using System.Threading.Tasks;
 
 namespace FurEver_Together.Services.Interfaces
 {
@@ -11,5 +12,8 @@ namespace FurEver_Together.Services.Interfaces
         Task UpdateAdoptionAsync(Adoption adoption);
         Task DeleteAdoptionAsync(int id);
         Task<Adoption?> GetAdoptionByPetAndUserAsync(int petId, string userId);
+        Task<List<Adoption>> GetAdoptionsByUserIdAsync(string userId);
+        Task<int> GetApprovedAdoptions2024Async();
+        Task<int> GetApprovedAdoptionsAllTimeAsync();
     }
 }

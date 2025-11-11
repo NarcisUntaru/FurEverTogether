@@ -1,5 +1,6 @@
-﻿using FurEver_Together.DataModels;
-using FurEver_Together.Data;
+﻿using FurEver_Together.Data;
+using FurEver_Together.DataModels;
+using FurEver_Together.Enums;
 using FurEver_Together.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,26 @@ namespace FurEver_Together.Repository
         {
             return await dbContext.Adoptions
                 .FirstOrDefaultAsync(a => a.PetId == petId && a.UserId == userId);
+        }
+        public async Task<List<Adoption>> GetAdoptionsByUserIdAsync(string userId)
+        {
+            return await dbContext.Adoptions
+                .Include(a => a.Pet)
+                .Where(a => a.UserId == userId)
+                .ToListAsync();
+        }
+        public async Task<int> CountApprovedAdoptionsAsync(DateTime fromDate)
+        {
+            return await dbContext.Adoptions
+                .Where(a => a.Status == ApplicationStatus.Approved && a.AdoptionDate >= fromDate)
+                .CountAsync();
+        }
+
+        public async Task<int> CountApprovedAdoptionsAllTimeAsync()
+        {
+            return await dbContext.Adoptions
+                .Where(a => a.Status == ApplicationStatus.Approved)
+                .CountAsync();
         }
     }
 }

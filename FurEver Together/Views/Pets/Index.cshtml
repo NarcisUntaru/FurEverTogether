@@ -71,7 +71,7 @@
 
             <div class="match-description">
                 Below you can see all the pets that match your personality.<br>
-                These shown results match with you for at least <strong>70%</strong>.
+                These shown results match with you for at least <strong>50%</strong>.
             </div>
         </div>
     <div class="pet-card-container">
@@ -88,9 +88,8 @@
         }
         else
         {
-            <div class="pet-card no-pets">
-                <img src="@Url.Content("~/uploads/Animals/no-image-available-pets.jpg")" alt="No Pets Available" class="pet-image" />
-                <div class="pet-name">No pets available</div>
+                <div class="no-pets-message" style="text-align:center; padding: 20px; font-size: 1.2em; color: #555;">
+                    Sorry, no pets are currently available for adoption.
             </div>
         }
     </div>

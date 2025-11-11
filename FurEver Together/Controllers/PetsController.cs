@@ -36,10 +36,31 @@ namespace FurEver_Together.Controllers
         public async Task<IActionResult> Index(PetType? type, string? sortOrder)
         {
             var pets = await _petService.GetAllPetsAsync();
+            pets = pets.Where(p => p.IsAdopted == false
+        && p.Adoption != null
+        && p.Adoption.Status != ApplicationStatus.Approved)
+    .ToList();
+
 
             if (type.HasValue)
             {
                 pets = pets.Where(p => p.Type == type.Value).ToList();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var filteredPets = new List<Pet>();
+
+                foreach (var pet in pets)
+                {
+                    double matchPercentage = await _matchingService.GetMatchPercentageForPetAndUserAsync(pet.PetId, user.Id);
+                    if (matchPercentage >= 50)
+                    {
+                        filteredPets.Add(pet);
+                    }
+                }
+                pets = filteredPets;
             }
 
             if (!string.IsNullOrEmpty(sortOrder))
@@ -57,6 +78,8 @@ namespace FurEver_Together.Controllers
 
             return View(pets);
         }
+
+
 
         // GET: Pets/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -122,7 +145,7 @@ namespace FurEver_Together.Controllers
                 };
 
                 await _petService.AddPetAsync(pet);
-                return RedirectToAction(nameof(Index));
+                return Redirect("/Identity/Account/Manage#admin-panel");
             }
             return View(petViewModel);
         }
@@ -237,7 +260,7 @@ namespace FurEver_Together.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _petService.DeletePetAsync(id);
-            return RedirectToAction(nameof(Index));
+            return Redirect("/Identity/Account/Manage#admin-panel");
         }
 
         private async Task<bool> PetExists(int id)
