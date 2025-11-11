@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -31,57 +32,22 @@ namespace FurEver_Together.Controllers
             _userManager = userManager;
             _userProfileService = userProfileService;
         }
+
         [HttpGet]
         [ActionName("Index")]
         public async Task<IActionResult> Index(PetType? type, string? sortOrder)
         {
-            var pets = await _petService.GetAllPetsAsync();
-            pets = pets.Where(p => p.IsAdopted == false
-        && p.Adoption != null
-        && p.Adoption.Status != ApplicationStatus.Approved)
-    .ToList();
-
-
-            if (type.HasValue)
-            {
-                pets = pets.Where(p => p.Type == type.Value).ToList();
-            }
+            var pets = await GetAvailablePetsAsync();
+            pets = FilterPetsByType(pets, type);
 
             var user = await _userManager.GetUserAsync(User);
-            if (user != null)
-            {
-                var filteredPets = new List<Pet>();
-
-                foreach (var pet in pets)
-                {
-                    double matchPercentage = await _matchingService.GetMatchPercentageForPetAndUserAsync(pet.PetId, user.Id);
-                    if (matchPercentage >= 50)
-                    {
-                        filteredPets.Add(pet);
-                    }
-                }
-                pets = filteredPets;
-            }
-
-            if (!string.IsNullOrEmpty(sortOrder))
-            {
-                switch (sortOrder.ToLower())
-                {
-                    case "name_asc":
-                        pets = pets.OrderBy(p => p.Name).ToList();
-                        break;
-                    case "name_desc":
-                        pets = pets.OrderByDescending(p => p.Name).ToList();
-                        break;
-                }
-            }
+            pets = await FilterPetsByMatchPercentageAsync(pets, user);
+            pets = SortPets(pets, sortOrder);
 
             return View(pets);
         }
 
-
-
-        // GET: Pets/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -91,16 +57,7 @@ namespace FurEver_Together.Controllers
             if (pet == null)
                 return NotFound();
 
-            double matchPercentage = 0;
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user != null)
-            {
-                matchPercentage = await _matchingService.GetMatchPercentageForPetAndUserAsync(pet.PetId, user.Id);
-            }
-
-            ViewData["MatchPercentage"] = matchPercentage;
-
+            await SetMatchPercentageViewDataAsync(pet);
             return View(pet);
         }
 
@@ -115,39 +72,13 @@ namespace FurEver_Together.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create(PetViewModel petViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                var pet = new Pet
-                {
-                    Name = petViewModel.Name,
-                    Type = petViewModel.Type,
-                    Breed = petViewModel.Breed,
-                    Age = petViewModel.Age,
-                    Gender = petViewModel.Gender,
-                    PictureUrl = petViewModel.PictureUrl,
-                    Description = petViewModel.Description,
-                    ArrivalDate = DateTime.Now,
-                    IsAdopted = false,
-                    Personality = new PersonalityProfile
-                    {
-                        EnergyLevel = petViewModel.EnergyLevel,
-                        Sociability = petViewModel.Sociability,
-                        AffectionLevel = petViewModel.AffectionLevel,
-                        Trainability = petViewModel.Trainability,
-                        Playfulness = petViewModel.Playfulness,
-                        AggressionLevel = petViewModel.AggressionLevel,
-                        NoiseLevel = petViewModel.NoiseLevel,
-                        GoodWithKids = petViewModel.GoodWithKids,
-                        GoodWithOtherPets = petViewModel.GoodWithOtherPets,
-                        Adaptability = petViewModel.Adaptability,
-                        AnxietyLevel = petViewModel.AnxietyLevel,
-                    }
-                };
+            if (!ModelState.IsValid)
+                return View(petViewModel);
 
-                await _petService.AddPetAsync(pet);
-                return Redirect("/Identity/Account/Manage#admin-panel");
-            }
-            return View(petViewModel);
+            var pet = MapViewModelToPet(petViewModel);
+            await _petService.AddPetAsync(pet);
+
+            return Redirect("/Identity/Account/Manage#admin-panel");
         }
 
         [Authorize(Roles = "Administrator")]
@@ -160,29 +91,7 @@ namespace FurEver_Together.Controllers
             if (pet == null)
                 return NotFound();
 
-            var petViewModel = new PetViewModel
-            {
-                PetId = pet.PetId,
-                Name = pet.Name,
-                Type = pet.Type,
-                Breed = pet.Breed,
-                Age = pet.Age,
-                Gender = pet.Gender,
-                PictureUrl = pet.PictureUrl,
-                Description = pet.Description,
-                EnergyLevel = pet.Personality?.EnergyLevel ?? EnergyLevel.Low,
-                Sociability = pet.Personality?.Sociability ?? Sociability.Shy,
-                AffectionLevel = pet.Personality?.AffectionLevel ?? AffectionLevel.Independent,
-                Trainability = pet.Personality?.Trainability ?? Trainability.Difficult,
-                Playfulness = pet.Personality?.Playfulness ?? Playfulness.Low,
-                AggressionLevel = pet.Personality?.AggressionLevel ?? AggressionLevel.None,
-                NoiseLevel = pet.Personality?.NoiseLevel ?? NoiseLevel.Quiet,
-                GoodWithKids = pet.Personality?.GoodWithKids ?? Question.No,
-                GoodWithOtherPets = pet.Personality?.GoodWithOtherPets ?? Question.No,
-                Adaptability = pet.Personality?.Adaptability ?? Adaptability.NeedsRoutine,
-                AnxietyLevel = pet.Personality?.AnxietyLevel ?? AnxietyLevel.Calm,
-            };
-
+            var petViewModel = MapPetToViewModel(pet);
             return View(petViewModel);
         }
 
@@ -194,51 +103,27 @@ namespace FurEver_Together.Controllers
             if (id != petViewModel.PetId)
                 return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(petViewModel);
+
+            var pet = await _petService.GetPetByIdAsync(id);
+            if (pet == null)
+                return NotFound();
+
+            UpdatePetFromViewModel(pet, petViewModel);
+
+            try
             {
-                var pet = await _petService.GetPetByIdAsync(id);
-                if (pet == null)
+                await _petService.UpdatePetAsync(pet);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await PetExists(pet.PetId))
                     return NotFound();
-
-                pet.Name = petViewModel.Name;
-                pet.Type = petViewModel.Type;
-                pet.Breed = petViewModel.Breed;
-                pet.Age = petViewModel.Age;
-                pet.Gender = petViewModel.Gender;
-                pet.PictureUrl = petViewModel.PictureUrl;
-                pet.Description = petViewModel.Description;
-
-                if (pet.Personality == null)
-                    pet.Personality = new PersonalityProfile();
-
-                pet.Personality.EnergyLevel = petViewModel.EnergyLevel;
-                pet.Personality.Sociability = petViewModel.Sociability;
-                pet.Personality.AffectionLevel = petViewModel.AffectionLevel;
-                pet.Personality.Trainability = petViewModel.Trainability;
-                pet.Personality.Playfulness = petViewModel.Playfulness;
-                pet.Personality.AggressionLevel = petViewModel.AggressionLevel;
-                pet.Personality.NoiseLevel = petViewModel.NoiseLevel;
-                pet.Personality.GoodWithKids = petViewModel.GoodWithKids;
-                pet.Personality.GoodWithOtherPets = petViewModel.GoodWithOtherPets;
-                pet.Personality.Adaptability = petViewModel.Adaptability;
-                pet.Personality.AnxietyLevel = petViewModel.AnxietyLevel;
-
-                try
-                {
-                    await _petService.UpdatePetAsync(pet);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!await PetExists(pet.PetId))
-                        return NotFound();
-                    else
-                        throw;
-                }
-
-                return RedirectToAction("Details", new { id = pet.PetId });
+                throw;
             }
 
-            return View(petViewModel);
+            return RedirectToAction("Details", new { id = pet.PetId });
         }
 
         [Authorize(Roles = "Administrator")]
@@ -261,6 +146,157 @@ namespace FurEver_Together.Controllers
         {
             await _petService.DeletePetAsync(id);
             return Redirect("/Identity/Account/Manage#admin-panel");
+        }
+
+        // Private helper methods
+
+        private async Task<List<Pet>> GetAvailablePetsAsync()
+        {
+            var allPets = await _petService.GetAllPetsAsync();
+            return allPets
+                .Where(p => p.IsAdopted == false &&
+                           p.Adoption != null &&
+                           p.Adoption.Status != ApplicationStatus.Approved)
+                .ToList();
+        }
+
+        private List<Pet> FilterPetsByType(List<Pet> pets, PetType? type)
+        {
+            if (!type.HasValue)
+                return pets;
+
+            return pets.Where(p => p.Type == type.Value).ToList();
+        }
+
+        private async Task<List<Pet>> FilterPetsByMatchPercentageAsync(List<Pet> pets, User? user)
+        {
+            if (user == null)
+                return pets;
+
+            var filteredPets = new List<Pet>();
+            foreach (var pet in pets)
+            {
+                var matchPercentage = await _matchingService.GetMatchPercentageForPetAndUserAsync(pet.PetId, user.Id);
+                if (matchPercentage >= 50)
+                {
+                    filteredPets.Add(pet);
+                }
+            }
+
+            return filteredPets;
+        }
+
+        private List<Pet> SortPets(List<Pet> pets, string? sortOrder)
+        {
+            if (string.IsNullOrEmpty(sortOrder))
+                return pets;
+
+            return sortOrder.ToLower() switch
+            {
+                "name_asc" => pets.OrderBy(p => p.Name).ToList(),
+                "name_desc" => pets.OrderByDescending(p => p.Name).ToList(),
+                _ => pets
+            };
+        }
+
+        private async Task SetMatchPercentageViewDataAsync(Pet pet)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var matchPercentage = user != null
+                ? await _matchingService.GetMatchPercentageForPetAndUserAsync(pet.PetId, user.Id)
+                : 0;
+
+            ViewData["MatchPercentage"] = matchPercentage;
+        }
+
+        private Pet MapViewModelToPet(PetViewModel viewModel)
+        {
+            return new Pet
+            {
+                Name = viewModel.Name,
+                Type = viewModel.Type,
+                Breed = viewModel.Breed,
+                Age = viewModel.Age,
+                Gender = viewModel.Gender,
+                PictureUrl = viewModel.PictureUrl,
+                Description = viewModel.Description,
+                ArrivalDate = DateTime.Now,
+                IsAdopted = false,
+                Personality = CreatePersonalityProfile(viewModel)
+            };
+        }
+
+        private PersonalityProfile CreatePersonalityProfile(PetViewModel viewModel)
+        {
+            return new PersonalityProfile
+            {
+                EnergyLevel = viewModel.EnergyLevel,
+                Sociability = viewModel.Sociability,
+                AffectionLevel = viewModel.AffectionLevel,
+                Trainability = viewModel.Trainability,
+                Playfulness = viewModel.Playfulness,
+                AggressionLevel = viewModel.AggressionLevel,
+                NoiseLevel = viewModel.NoiseLevel,
+                GoodWithKids = viewModel.GoodWithKids,
+                GoodWithOtherPets = viewModel.GoodWithOtherPets,
+                Adaptability = viewModel.Adaptability,
+                AnxietyLevel = viewModel.AnxietyLevel
+            };
+        }
+
+        private PetViewModel MapPetToViewModel(Pet pet)
+        {
+            return new PetViewModel
+            {
+                PetId = pet.PetId,
+                Name = pet.Name,
+                Type = pet.Type,
+                Breed = pet.Breed,
+                Age = pet.Age,
+                Gender = pet.Gender,
+                PictureUrl = pet.PictureUrl,
+                Description = pet.Description,
+                EnergyLevel = pet.Personality?.EnergyLevel ?? EnergyLevel.Low,
+                Sociability = pet.Personality?.Sociability ?? Sociability.Shy,
+                AffectionLevel = pet.Personality?.AffectionLevel ?? AffectionLevel.Independent,
+                Trainability = pet.Personality?.Trainability ?? Trainability.Difficult,
+                Playfulness = pet.Personality?.Playfulness ?? Playfulness.Low,
+                AggressionLevel = pet.Personality?.AggressionLevel ?? AggressionLevel.None,
+                NoiseLevel = pet.Personality?.NoiseLevel ?? NoiseLevel.Quiet,
+                GoodWithKids = pet.Personality?.GoodWithKids ?? Question.No,
+                GoodWithOtherPets = pet.Personality?.GoodWithOtherPets ?? Question.No,
+                Adaptability = pet.Personality?.Adaptability ?? Adaptability.NeedsRoutine,
+                AnxietyLevel = pet.Personality?.AnxietyLevel ?? AnxietyLevel.Calm
+            };
+        }
+
+        private void UpdatePetFromViewModel(Pet pet, PetViewModel viewModel)
+        {
+            pet.Name = viewModel.Name;
+            pet.Type = viewModel.Type;
+            pet.Breed = viewModel.Breed;
+            pet.Age = viewModel.Age;
+            pet.Gender = viewModel.Gender;
+            pet.PictureUrl = viewModel.PictureUrl;
+            pet.Description = viewModel.Description;
+
+            pet.Personality ??= new PersonalityProfile();
+            UpdatePersonalityProfile(pet.Personality, viewModel);
+        }
+
+        private void UpdatePersonalityProfile(PersonalityProfile personality, PetViewModel viewModel)
+        {
+            personality.EnergyLevel = viewModel.EnergyLevel;
+            personality.Sociability = viewModel.Sociability;
+            personality.AffectionLevel = viewModel.AffectionLevel;
+            personality.Trainability = viewModel.Trainability;
+            personality.Playfulness = viewModel.Playfulness;
+            personality.AggressionLevel = viewModel.AggressionLevel;
+            personality.NoiseLevel = viewModel.NoiseLevel;
+            personality.GoodWithKids = viewModel.GoodWithKids;
+            personality.GoodWithOtherPets = viewModel.GoodWithOtherPets;
+            personality.Adaptability = viewModel.Adaptability;
+            personality.AnxietyLevel = viewModel.AnxietyLevel;
         }
 
         private async Task<bool> PetExists(int id)
