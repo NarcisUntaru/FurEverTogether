@@ -11,9 +11,7 @@ namespace FurEver_Together.DataModels
         public ICollection<Adoption> Adoptions { get; set; } = new List<Adoption>();
         
         public ICollection<ContactUs>? ContactMessages { get; set; }
-        [JsonRequired]
-        public Volunteer Volunteer { get; set; }
-        [JsonRequired]
-        public PersonalityProfile Preferences { get; set; }
+        public Volunteer? Volunteer { get; set; }
+        public PersonalityProfile? Preferences { get; set; }
     }
 }

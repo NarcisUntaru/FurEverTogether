@@ -7,7 +7,6 @@ namespace FurEver_Together.ViewModels
     {
         [JsonRequired]
         public int Id { get; set; }
-        [JsonRequired]
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }

@@ -16,9 +16,7 @@ namespace FurEver_Together.ViewModels
 
         [JsonRequired]
         public int PetId { get; set; }
-        [JsonRequired]
-        public List<SelectListItem> Pets { get; set; }
-        [JsonRequired]
-        public Pet Pet { get; set; }
+        public List<SelectListItem>? Pets { get; set; }
+        public Pet? Pet { get; set; }
     }
 }
