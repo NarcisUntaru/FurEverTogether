@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
@@ -6,8 +7,20 @@ public class EmailService
 {
     private readonly string smtpHost = "smtp.gmail.com";
     private readonly int smtpPort = 587;
-    private readonly string smtpUser = "testlicenta063@gmail.com";
-    private readonly string smtpPass = "cyfjcbpxvwolrazn";
+    private readonly string smtpUser;
+    private readonly string smtpPass;
+
+    public EmailService()
+    {
+        // Get credentials from environment variables
+        smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
+        smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
+
+        if (string.IsNullOrEmpty(smtpUser) || string.IsNullOrEmpty(smtpPass))
+        {
+            throw new InvalidOperationException("SMTP credentials are not set in environment variables.");
+        }
+    }
 
     public async Task SendEmailAsync(string toEmail, string subject, string body)
     {
