@@ -34,15 +34,17 @@
         </div>
     </div>
 
-    <div class="profile-actions">
-        <button onclick="showContent('overview', this)">Overview</button>
-        <button onclick="showContent('adoption-requests', this)">Adoption Requests</button>
-        <button onclick="showContent('volunteer-applications', this)">Volunteer Applications</button>
-        <button onclick="showContent('donation-history', this)">Donation History</button>
-        @if (User.IsInRole("Administrator"))
-        {
-            <button onclick="showContent('admin-panel', this)">Admin Panel</button>
-        }
+    <div class="profile-actions-container">
+        <div class="profile-actions">
+            <button onclick="showContent('overview', this)">Overview</button>
+            <button onclick="showContent('adoption-requests', this)">Adoption Requests</button>
+            <button onclick="showContent('volunteer-applications', this)">Volunteer Applications</button>
+            <button onclick="showContent('donation-history', this)">Donation History</button>
+            @if (User.IsInRole("Administrator"))
+            {
+                <button onclick="showContent('admin-panel', this)">Admin Panel</button>
+            }
+        </div>
     </div>
 
     <div id="overview" class="profile-content" style="display:block;">
@@ -224,6 +226,10 @@
                                     <strong>Pet Id:</strong> @pet.PetId
                                 </div>
                                 <div class="status-info">
+                                    <strong>Has Active Adoption?:</strong>
+                                    @((pet.Adoption != null && pet.Adoption.Status == ApplicationStatus.Approved) ? "True" : "False")
+                                </div>
+                                <div class="status-info">
                                     <strong>Adopted?:</strong> @pet.IsAdopted
                                 </div>
                                 <div class="admin-buttons">
@@ -258,18 +264,35 @@
                                     <strong>Pet Name:</strong> @request.Pet?.Name
                                 </div>
                                 <div>
+                                    <strong>Pet ID:</strong> @request.PetId
+                                </div>
+                                <div>
                                     <strong>User ID:</strong> @request.UserId
                                 </div>
-                                 <div class="adopter-info">
+                                <div class="adopter-info">
                                     <strong>Request Date:</strong> @request.RequestDate
-                                </div> 
+                                </div>
                                 <div class="status-info">
+                                    <strong>Status:</strong>
                                     <span class="@GetStatusClass(request.Status)">@request.Status</span>
+                                </div>
+                                <div class="adoption-status">
+                                    @if (request.Status == ApplicationStatus.Pending)
+                                    {
+                                        <form asp-action="Approve" asp-controller="Adoptions" method="post">
+                                            <input type="hidden" name="id" value="@request.Id" />
+                                            <button type="submit" class="adoption-action adoption-approve">Approve</button>
+                                        </form>
+                                        <form asp-action="Reject" asp-controller="Adoptions" method="post">
+                                            <input type="hidden" name="id" value="@request.Id" />
+                                            <button type="submit" class="adoption-action adoption-reject">Reject</button>
+                                        </form>
+                                    }
                                 </div>
                                 <div class="actions">
                                     <a asp-controller="Adoptions" asp-action="Details" asp-route-id="@request.Id" class="view-button">View</a>
-
                                 </div>
+                                   
                             </li>
                         }
                     </ul>
@@ -324,9 +347,6 @@
                                 </div>
                                 <div class="adopter-info">
                                     <strong>User ID:</strong> @user.Id
-                                </div>
-                                <div class="actions">
-                                    <a asp-page="/Users/Details" asp-route-id="@user.Id" class="btn">View</a>
                                 </div>
                             </li>
                         }
@@ -388,22 +408,18 @@
         };
 
                 function showAdminContent(contentId, button) {
-            // Hide all admin-content sections
             var allAdminContent = document.querySelectorAll('.admin-content');
             allAdminContent.forEach(function (content) {
                 content.style.display = 'none';
             });
 
-            // Show the selected admin content
             document.getElementById(contentId).style.display = 'block';
 
-            // Remove active class from all admin buttons
             var allAdminButtons = button.parentElement.querySelectorAll('button');
             allAdminButtons.forEach(function (btn) {
                 btn.classList.remove('active');
             });
 
-            // Add active class to clicked button
             button.classList.add('active');
         }
     </script>
