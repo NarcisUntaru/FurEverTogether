@@ -6,8 +6,10 @@ namespace FurEver_Together.Services.Interfaces
     {
         void Add(Volunteer Volunteer);
         Volunteer GetById(int id);
+        Task<Volunteer> GetByIdAsync(int id);
         void Delete(int id);
         void Update(Volunteer volunteer);
         bool HasSubmitted(string userId);
+        Task UpdateAsync(Volunteer volunteer);
     }
 }

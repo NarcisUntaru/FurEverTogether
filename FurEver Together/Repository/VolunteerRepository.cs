@@ -14,5 +14,9 @@ namespace FurEver_Together.Repository
                 dbContext.Volunteers.Update(volunteer);
             }
         }
+        public async Task<Volunteer> GetByIdAsync(int id)
+        {
+            return await dbContext.Volunteers.FirstOrDefaultAsync(v => v.Id == id);
+        }
     }
 }
