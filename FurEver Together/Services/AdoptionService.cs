@@ -67,5 +67,6 @@ namespace FurEver_Together.Services
             return _repositoryWrapper.AdoptionRepository.CountApprovedAdoptionsAllTimeAsync();
         }
 
+
     }
 }

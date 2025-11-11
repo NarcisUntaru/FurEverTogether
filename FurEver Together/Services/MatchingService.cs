@@ -9,6 +9,7 @@ namespace FurEverTogether.Services
         private readonly IPetService _petService;
         private readonly IUserProfileService _userProfileService;
 
+        // Constructor injection of dependencies
         public MatchingService(IPetService petService, IUserProfileService userProfileService)
         {
             _petService = petService;
@@ -17,6 +18,7 @@ namespace FurEverTogether.Services
 
         public double CalculateMatchPercentage(PersonalityProfile adopter, PersonalityProfile pet)
         {
+            // Euclidean distance
 
             var adopterVector = adopter.ToVector();
             var petVector = pet.ToVector();

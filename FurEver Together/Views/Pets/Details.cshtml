@@ -46,16 +46,17 @@
                 <p class="match-percentage">@((int)Math.Round((double)ViewData["MatchPercentage"]))%</p>
                 @if (!Model.IsAdopted)
                 {
-                    <form method="post" asp-controller="Adoptions" asp-action="Adopt" asp-route-petId="@Model.PetId">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="adopt-button">ADOPT NOW</button>
-                    </form>
+                <form method="post" asp-controller="Adoptions" asp-action="Adopt" asp-route-petId="@Model.PetId">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="adopt-button">ADOPT NOW</button>
+                </form>
                 }
                 else
-                {
+            {
                     <p class="adopted-label">This pet has already found a lovely family.</p>
                 }
-            </div>
+                </div>
+            }
     </div>
 
         <div class="right-column">

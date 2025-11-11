@@ -28,6 +28,12 @@
 </head>
 <body>
 
+    <form action="@Url.Action("Create", "Pets")" method="get">
+        @if (User.IsInRole("Administrator"))
+        {
+            <button type="submit">Add Pet</button>
+        }
+    </form>
     <div class="pet-container">
         <h1 style="text-align: center; color: #2F3C7E;">
             Available <span style="color: #5561A9;">@petType</span> for adoption
@@ -68,25 +74,26 @@
                 These shown results match with you for at least <strong>50%</strong>.
             </div>
         </div>
-        <div class="pet-card-container">
-            @if (Model != null && Model.Any())
+    <div class="pet-card-container">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var pet in Model)
             {
-                foreach (var pet in Model)
-                {
-                    <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="pet-card">
-                        <img src="@pet.PictureUrl" alt="No Image" class="pet-image"
-                             onerror="this.onerror=null; this.src='@Url.Content("~/uploads/Animals/no-image-available-pets.jpg")';" />
-                        <div class="pet-name">@pet.Name</div>
-                    </a>
-                }
+                <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="pet-card">
+                    <img src="@pet.PictureUrl" alt="No Image" class="pet-image"
+                         onerror="this.onerror=null; this.src='@Url.Content("~/uploads/Animals/no-image-available-pets.jpg")';" />
+                    <div class="pet-name">@pet.Name</div>
+                </a>
             }
-            else
-            {
+        }
+        else
+        {
                 <div class="no-pets-message" style="text-align:center; padding: 20px; font-size: 1.2em; color: #555;">
                     Sorry, no pets are currently available for adoption.
-                </div>
-            }
-        </div>
+            </div>
+        }
+    </div>
+    </div>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
