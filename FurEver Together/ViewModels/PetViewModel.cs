@@ -1,5 +1,6 @@
 ﻿using FurEver_Together.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FurEver_Together.ViewModels
 {
@@ -15,27 +16,27 @@ namespace FurEver_Together.ViewModels
         public string PictureUrl { get; set; }
         public double MatchPercentage { get; set; }
 
-        [Required]
+        [JsonRequired]
         public EnergyLevel EnergyLevel { get; set; }
-        [Required]
+        [JsonRequired]
         public Sociability Sociability { get; set; }
-        [Required]
+        [JsonRequired]
         public AffectionLevel AffectionLevel { get; set; }
-        [Required]
+        [JsonRequired]
         public Trainability Trainability { get; set; }
-        [Required]
+        [JsonRequired]
         public Playfulness Playfulness { get; set; }
-        [Required]
+        [JsonRequired]
         public AggressionLevel AggressionLevel { get; set; }
-        [Required]
+        [JsonRequired]
         public NoiseLevel NoiseLevel { get; set; }
-        [Required]
+        [JsonRequired]
         public Question GoodWithKids { get; set; }
-        [Required]
+        [JsonRequired]
         public Question GoodWithOtherPets { get; set; }
-        [Required]
+        [JsonRequired]
         public Adaptability Adaptability { get; set; }
-        [Required]
+        [JsonRequired]
         public AnxietyLevel AnxietyLevel { get; set; }
     }
 }
