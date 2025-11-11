@@ -8,11 +8,11 @@ namespace FurEver_Together.ViewModels
     {
         [JsonRequired]
         public int Id { get; set; }
-        [JsonRequired]
+        [Required]
         public string Message { get; set; }
-        [JsonRequired]
+        [Required]
         public string PhoneNumber { get; set; }
-        [JsonRequired]
+        [Required]
         public string FullName { get; set; }
         [JsonRequired]
         public bool TransportationAvailable { get; set; }
