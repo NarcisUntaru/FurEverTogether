@@ -13,5 +13,7 @@ namespace FurEver_Together.Services.Interfaces
         Task DeleteAdoptionAsync(int id);
         Task<Adoption?> GetAdoptionByPetAndUserAsync(int petId, string userId);
         Task<List<Adoption>> GetAdoptionsByUserIdAsync(string userId);
+        Task<int> GetApprovedAdoptions2024Async();
+        Task<int> GetApprovedAdoptionsAllTimeAsync();
     }
 }

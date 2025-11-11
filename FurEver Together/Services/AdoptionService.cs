@@ -2,6 +2,7 @@
 using FurEver_Together.Repository.Interfaces;
 using FurEver_Together.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace FurEver_Together.Services
 {
@@ -53,6 +54,17 @@ namespace FurEver_Together.Services
         public Task<List<Adoption>> GetAdoptionsByUserIdAsync(string userId)
         {
             return _repositoryWrapper.AdoptionRepository.GetAdoptionsByUserIdAsync(userId);
+        }
+
+        public Task<int> GetApprovedAdoptions2024Async()
+        {
+            var startOf2024 = new DateTime(2024, 1, 1);
+            return _repositoryWrapper.AdoptionRepository.CountApprovedAdoptionsAsync(startOf2024);
+        }
+
+        public Task<int> GetApprovedAdoptionsAllTimeAsync()
+        {
+            return _repositoryWrapper.AdoptionRepository.CountApprovedAdoptionsAllTimeAsync();
         }
 
     }
