@@ -7,8 +7,11 @@ namespace FurEver_Together.DataModels
     {
         [JsonRequired]
         public int Id { get; set; }
+        [JsonRequired]
         public string Message { get; set; }
+        [JsonRequired]
         public string PhoneNumber { get; set; }
+        [JsonRequired]
         public string FullName { get; set; }
         [JsonRequired]
         public bool TransportationAvailable { get; set; }
@@ -26,8 +29,9 @@ namespace FurEver_Together.DataModels
         public ApplicationStatus Status { get; set; }
 
         // Navigation properties
+        [JsonRequired]
         public string UserId { get; set; }
-
+        [JsonRequired]
         public User User { get; set; }
     }
 }

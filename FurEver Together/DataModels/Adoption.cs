@@ -13,11 +13,12 @@ namespace FurEver_Together.DataModels
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Pending;
 
         // Navigation properties
-
+        [JsonRequired]
         public User User { get; set; }
         public string? UserId { get; set; }
         [JsonRequired]
         public int PetId { get; set; }
+        [JsonRequired]
         public Pet Pet { get; set; }
 
     }
