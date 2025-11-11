@@ -33,43 +33,43 @@
                 <!-- Left column: Pet fields -->
                 <div class="form-column">
                     <div class="form-group">
-                        <label asp-for="Name" class="control-label"></label>
+                        <label for="Name" class="control-label">Name</label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Type" class="control-label"></label>
+                        <label for="Type" class="control-label">Type</label>
                         <select asp-for="Type" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.PetType>()"></select>
                         <span asp-validation-for="Type" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Breed" class="control-label"></label>
+                        <label for="Breed" class="control-label">Breed</label>
                         <input asp-for="Breed" class="form-control" />
                         <span asp-validation-for="Breed" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Age" class="control-label"></label>
+                        <label for="Age" class="control-label">Age</label>
                         <input asp-for="Age" class="form-control" />
                         <span asp-validation-for="Age" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Gender" class="control-label"></label>
+                        <label for="Gender" class="control-label">Gender</label>
                         <input asp-for="Gender" class="form-control" />
                         <span asp-validation-for="Gender" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Description" class="control-label"></label>
+                        <label for="Description" class="control-label">Description</label>
                         <input asp-for="Description" class="form-control" />
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="PictureUrl" class="control-label"></label>
+                        <label for="PictureUrl" class="control-label">PictureUrl</label>
                         <input asp-for="PictureUrl" class="form-control" />
                         <span asp-validation-for="PictureUrl" class="text-danger"></span>
                     </div>
@@ -80,67 +80,67 @@
                     <h3>Personality Profile</h3>
 
                     <div class="form-group">
-                        <label asp-for="EnergyLevel" class="control-label"></label>
+                        <label for="EnergyLevel" class="control-label">EnergyLevel</label>
                         <select asp-for="EnergyLevel" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.EnergyLevel>()"></select>
                         <span asp-validation-for="EnergyLevel" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Sociability" class="control-label"></label>
+                        <label for="Sociability" class="control-label">Sociability</label>
                         <select asp-for="Sociability" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.Sociability>()"></select>
                         <span asp-validation-for="Sociability" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="AffectionLevel" class="control-label"></label>
+                        <label for="AffectionLevel" class="control-label">AffectionLevel</label>
                         <select asp-for="AffectionLevel" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.AffectionLevel>()"></select>
                         <span asp-validation-for="AffectionLevel" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Trainability" class="control-label"></label>
+                        <label for="Trainability" class="control-label">Trainability</label>
                         <select asp-for="Trainability" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.Trainability>()"></select>
                         <span asp-validation-for="Trainability" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Playfulness" class="control-label"></label>
+                        <label for="Playfulness" class="control-label">Playfulness</label>
                         <select asp-for="Playfulness" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.Playfulness>()"></select>
                         <span asp-validation-for="Playfulness" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="AggressionLevel" class="control-label"></label>
+                        <label for="AggressionLevel" class="control-label">AggressionLevel</label>
                         <select asp-for="AggressionLevel" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.AggressionLevel>()"></select>
                         <span asp-validation-for="AggressionLevel" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="NoiseLevel" class="control-label"></label>
+                        <label for="NoiseLevel" class="control-label">NoiseLevel</label>
                         <select asp-for="NoiseLevel" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.NoiseLevel>()"></select>
                         <span asp-validation-for="NoiseLevel" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="GoodWithKids" class="control-label"></label>
+                        <label for="GoodWithKids" class="control-label">GoodWithKids</label>
                         <select asp-for="GoodWithKids" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.Question>()"></select>
                         <span asp-validation-for="GoodWithKids" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="GoodWithOtherPets" class="control-label"></label>
+                        <label for="GoodWithOtherPets" class="control-label">GoodWithOtherPets</label>
                         <select asp-for="GoodWithOtherPets" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.Question>()"></select>
                         <span asp-validation-for="GoodWithOtherPets" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Adaptability" class="control-label"></label>
+                        <label for="Adaptability" class="control-label">Adaptability</label>
                         <select asp-for="Adaptability" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.Adaptability>()"></select>
                         <span asp-validation-for="Adaptability" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="AnxietyLevel" class="control-label"></label>
+                        <label for="AnxietyLevel" class="control-label">AnxietyLevel</label>
                         <select asp-for="AnxietyLevel" class="form-control" asp-items="Html.GetEnumSelectList<FurEver_Together.Enums.AnxietyLevel>()"></select>
                         <span asp-validation-for="AnxietyLevel" class="text-danger"></span>
                     </div>
