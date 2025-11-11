@@ -41,24 +41,13 @@
         margin-top: 10px;
     }
 
-
-.profile-actions-container
-{
-    background-color: rgba(251, 234, 235, 0.5); /* semi-transparent background */
-    padding: 20px;
-    border-radius: 10px;
-    max-width: fit-content;
-    margin: 0 auto; /* center horizontally */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* optional subtle shadow */
-}
-
+/* Profile Actions Section */
 .profile-actions
 {
     display: flex;
     justify-content: center;
     gap: 20px;
-    flex-wrap: wrap; /* makes it responsive */
-    margin-top: 0;
+    margin-top: 20px;
 }
 
     .profile-actions button
@@ -76,13 +65,14 @@
             background-color: #1A2744;
         }
 
-
+        /* Active button style */
         .profile-actions button.active
         {
             background-color: #1A2744;
             font-weight: bold;
         }
 
+/* Profile content sections */
 .profile-content
 {
     display: flex;
@@ -292,42 +282,3 @@
     cursor: pointer;
     text-decoration: none;
 }
-.adoption-status
-{
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.adoption-action
-{
-    border: none;
-    padding: 8px 14px;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    color: white;
-    transition: background-color 0.3s ease;
-    text-align: center;
-}
-
-.adoption-approve
-{
-    background-color: #28a745;
-}
-
-    .adoption-approve:hover
-    {
-        background-color: #218838;
-    }
-
-.adoption-reject
-{
-    background-color: #dc3545;
-}
-
-    .adoption-reject:hover
-    {
-        background-color: #c82333;
-    }

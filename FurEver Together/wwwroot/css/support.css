@@ -14,7 +14,6 @@
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
-    color: #2F3C7E;
 }
 
 .box
@@ -59,24 +58,3 @@
     margin: 0 auto;
     text-align: center;
 }
-
-button.button,
-a.button
-{
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #2F3C7E; 
-    color: white;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none; 
-    text-align: center;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-    a.button:hover,
-    button.button:hover
-    {
-        background-color: #005c99;
-    }
