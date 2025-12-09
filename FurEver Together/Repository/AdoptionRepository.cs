@@ -52,5 +52,13 @@ namespace FurEver_Together.Repository
                 .Where(a => a.Status == ApplicationStatus.Approved)
                 .CountAsync();
         }
+
+        public async Task<List<Adoption>> GetAllWithRelatedDataAsync()
+        {
+            return await dbContext.Adoptions
+                .Include(a => a.Pet)
+                .Include(a => a.User)
+                .ToListAsync();
+        }
     }
 }

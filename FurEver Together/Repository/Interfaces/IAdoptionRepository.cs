@@ -10,4 +10,5 @@ public interface IAdoptionRepository : IGenericRepository<Adoption>
     Task<List<Adoption>> GetAdoptionsByUserIdAsync(string userId);
     Task<int> CountApprovedAdoptionsAsync(DateTime fromDate);
     Task<int> CountApprovedAdoptionsAllTimeAsync();
+    Task<List<Adoption>> GetAllWithRelatedDataAsync();
 }

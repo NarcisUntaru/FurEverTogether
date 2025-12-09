@@ -254,6 +254,13 @@
 
             <div id="admin-view-adoption-requests" class="admin-content" style="display:none;">
                 <h3>All Adoption Requests</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <a asp-controller="Adoptions" asp-action="ExportToPdf" class="add-adoption-action" target="_blank">
+                        Download PDF Report
+                    </a>
+                </div>
+
                 @if (Model.AllAdoptionRequests != null && Model.AllAdoptionRequests.Any())
                 {
                     <ul class="adoption-list">

@@ -25,7 +25,7 @@ namespace FurEver_Together.Services
 
         public async Task<IEnumerable<Adoption>> GetAllAdoptionsAsync()
         {
-            return await _repositoryWrapper.AdoptionRepository.GetAllAsync();
+            return await _repositoryWrapper.AdoptionRepository.GetAllWithRelatedDataAsync();
         }
         public async Task AddAdoptionAsync(Adoption adoption)
         {

@@ -2,6 +2,6 @@
 {
     public interface IPdfExportService
     {
-        byte[] GeneratePdfFromHtml(string htmlContent, string title = "Document");
+        byte[] GenerateAdoptionRequestsPdf(IEnumerable<DataModels.Adoption> adoptionRequests);
     }
 }

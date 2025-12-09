@@ -20,6 +20,7 @@ namespace FurEver_Together.Controllers
         private readonly IMatchingService _matchingService;
         private readonly UserManager<User> _userManager;
         private readonly EmailService _emailService;
+        private readonly IPdfExportService _pdfExportService;
 
         public AdoptionsController(
             IMatchingService matchingService,
@@ -32,6 +33,7 @@ namespace FurEver_Together.Controllers
             _matchingService = matchingService;
             _adoptionService = adoptionService;
             _petService = petService;
+            _pdfExportService = pdfExportService;
             _userManager = userManager;
             _emailService = emailService;
         }
@@ -153,6 +155,16 @@ namespace FurEver_Together.Controllers
             await SendRejectionEmail(adoption);
 
             return Redirect("/Identity/Account/Manage#adoption-requests");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportToPdf()
+        {
+            var adoptionRequests = await _adoptionService.GetAllAdoptionsAsync();
+            var pdfBytes = _pdfExportService.GenerateAdoptionRequestsPdf(adoptionRequests);
+
+            var fileName = $"AdoptionRequests_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+            return File(pdfBytes, "application/pdf", fileName);
         }
 
         // Private helper methods
