@@ -24,12 +24,12 @@ namespace FurEver_Together.Repository
             return await dbSet.FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await dbSet.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await dbSet.FindAsync(id);
         }
