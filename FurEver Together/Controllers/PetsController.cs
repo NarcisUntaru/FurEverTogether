@@ -11,23 +11,27 @@ using Microsoft.AspNetCore.Authorization;
 using FurEver_Together.Enums;
 using FurEverTogether.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FurEver_Together.Controllers
 {
     public class PetsController : Controller
     {
         private readonly IPetService _petService;
+        private readonly IShelterService _shelterService;
         private readonly IMatchingService _matchingService;
         private readonly UserManager<User> _userManager;
         private readonly IUserProfileService _userProfileService;
 
         public PetsController(
             IPetService petService,
+            IShelterService shelterService,
             IMatchingService matchingService,
             UserManager<User> userManager,
             IUserProfileService userProfileService)
         {
             _petService = petService;
+            _shelterService = shelterService;
             _matchingService = matchingService;
             _userManager = userManager;
             _userProfileService = userProfileService;
@@ -57,14 +61,22 @@ namespace FurEver_Together.Controllers
             if (pet == null)
                 return NotFound();
 
+            // Load shelter data if ShelterId exists
+            if (pet.ShelterId.HasValue && pet.Shelter == null)
+            {
+                pet.Shelter = await _shelterService.GetShelterByIdAsync(pet.ShelterId.Value);
+            }
+
             await SetMatchPercentageViewDataAsync(pet);
             return View(pet);
         }
 
         [Authorize(Roles = "Administrator")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var viewModel = new PetViewModel();
+            await PopulateSheltersDropdown(viewModel);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -73,7 +85,10 @@ namespace FurEver_Together.Controllers
         public async Task<IActionResult> Create(PetViewModel petViewModel)
         {
             if (!ModelState.IsValid)
+            {
+                await PopulateSheltersDropdown(petViewModel);
                 return View(petViewModel);
+            }
 
             var pet = MapViewModelToPet(petViewModel);
             await _petService.AddPetAsync(pet);
@@ -92,6 +107,7 @@ namespace FurEver_Together.Controllers
                 return NotFound();
 
             var petViewModel = MapPetToViewModel(pet);
+            await PopulateSheltersDropdown(petViewModel);
             return View(petViewModel);
         }
 
@@ -104,7 +120,10 @@ namespace FurEver_Together.Controllers
                 return NotFound();
 
             if (!ModelState.IsValid)
+            {
+                await PopulateSheltersDropdown(petViewModel);
                 return View(petViewModel);
+            }
 
             var pet = await _petService.GetPetByIdAsync(id);
             if (pet == null)
@@ -149,6 +168,25 @@ namespace FurEver_Together.Controllers
         }
 
         // Private helper methods
+
+        private async Task PopulateSheltersDropdown(PetViewModel viewModel)
+        {
+            var shelters = await _shelterService.GetAllSheltersAsync();
+            viewModel.Shelters = shelters
+                .Select(s => new SelectListItem
+                {
+                    Value = s.ShelterId.ToString(),
+                    Text = s.Name
+                })
+                .ToList();
+
+            // Add an optional "No Shelter" option
+            viewModel.Shelters.Insert(0, new SelectListItem
+            {
+                Value = "",
+                Text = "-- Select a Shelter (Optional) --"
+            });
+        }
 
         private async Task<List<Pet>> GetAvailablePetsAsync()
         {
@@ -222,6 +260,7 @@ namespace FurEver_Together.Controllers
                 Description = viewModel.Description,
                 ArrivalDate = DateTime.Now,
                 IsAdopted = false,
+                ShelterId = viewModel.ShelterId,
                 Personality = CreatePersonalityProfile(viewModel)
             };
         }
@@ -256,6 +295,7 @@ namespace FurEver_Together.Controllers
                 Gender = pet.Gender,
                 PictureUrl = pet.PictureUrl,
                 Description = pet.Description,
+                ShelterId = pet.ShelterId,
                 EnergyLevel = pet.Personality?.EnergyLevel ?? EnergyLevel.Low,
                 Sociability = pet.Personality?.Sociability ?? Sociability.Shy,
                 AffectionLevel = pet.Personality?.AffectionLevel ?? AffectionLevel.Independent,
@@ -279,6 +319,7 @@ namespace FurEver_Together.Controllers
             pet.Gender = viewModel.Gender;
             pet.PictureUrl = viewModel.PictureUrl;
             pet.Description = viewModel.Description;
+            pet.ShelterId = viewModel.ShelterId;
 
             pet.Personality ??= new PersonalityProfile();
             UpdatePersonalityProfile(pet.Personality, viewModel);

@@ -1,4 +1,6 @@
 ﻿using FurEver_Together.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -19,6 +21,9 @@ namespace FurEver_Together.ViewModels
         public string? PictureUrl { get; set; }
         [JsonRequired]
         public double MatchPercentage { get; set; }
+        public int? ShelterId { get; set; }
+        [JsonIgnore]
+        public List<SelectListItem>? Shelters { get; set; }
 
         [JsonRequired]
         public EnergyLevel EnergyLevel { get; set; }

@@ -23,5 +23,8 @@ namespace FurEver_Together.DataModels
         public string? PictureUrl { get; set; }
         public Adoption? Adoption { get; set; }
         public PersonalityProfile? Personality { get; set; }
+        
+        public int? ShelterId { get; set; }
+        public Shelter? Shelter { get; set; }
     }
 }

@@ -16,7 +16,17 @@ namespace FurEver_Together.Repository
         {
             return await dbContext.Pets
                 .Include(p => p.Adoption)
+                .Include(p => p.Shelter)
                 .ToListAsync();
+        }
+
+        public override async Task<Pet?> GetByIdAsync(int id)
+        {
+            return await dbContext.Pets
+                .Include(p => p.Adoption)
+                .Include(p => p.Shelter)
+                .Include(p => p.Personality)
+                .FirstOrDefaultAsync(p => p.PetId == id);
         }
     }
 }

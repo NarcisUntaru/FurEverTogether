@@ -5,4 +5,5 @@ namespace FurEver_Together.Repository.Interfaces;
 public interface IPetRepository : IGenericRepository<Pet>
 {
     Task<IEnumerable<Pet>> GetAllAsync();
+    Task<Pet?> GetByIdAsync(int id);
 }

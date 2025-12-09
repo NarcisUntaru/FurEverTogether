@@ -22,6 +22,7 @@ public partial class FurEverTogetherDbContext : IdentityDbContext<User>
     public virtual DbSet<Pet> Pets { get; set; }
     public virtual DbSet<Volunteer> Volunteers { get; set; }
     public DbSet<PersonalityProfile> PersonalityProfiles { get; set; }
+    public virtual DbSet<Shelter> Shelters { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
      => optionsBuilder.UseMySQL("Name=ConnectionStrings:FurEverTogetherDb");
@@ -44,15 +45,18 @@ public partial class FurEverTogetherDbContext : IdentityDbContext<User>
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Adoption>()
-    .HasOne(a => a.User)
-    .WithMany(u => u.Adoptions)
-    .HasForeignKey(a => a.UserId)
-    .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(a => a.User)
+            .WithMany(u => u.Adoptions)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Pet>().OwnsOne(p => p.Personality);
         modelBuilder.Entity<User>().OwnsOne(a => a.Preferences);
 
+        modelBuilder.Entity<Shelter>()
+            .HasMany(s => s.Pets)
+            .WithOne(p => p.Shelter)
+            .HasForeignKey(p => p.ShelterId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
-
-
 }
