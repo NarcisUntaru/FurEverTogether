@@ -200,9 +200,14 @@
                     <button type="submit" class="add-pet-action">Add Pet</button>
                 </form>
 
+                <form method="get" asp-controller="Shelters" asp-action="Create" style="display:inline;">
+                    <button type="submit" class="add-adoption-action">Add Shelter</button>
+                </form>
+
                 <button type="button" class="admin-action-button" onclick="showAdminContent('admin-view-adoption-requests', this)">View Adoption Requests</button>
                 <button type="button" class="admin-action-button" onclick="showAdminContent('admin-view-volunteer-requests', this)">View Volunteer Requests</button>
                 <button type="button" class="admin-action-button" onclick="showAdminContent('view-pets', this)">View Pets</button>
+                <button type="button" class="admin-action-button" onclick="showAdminContent('admin-view-shelters', this)">View Shelters</button>
                 <button type="button" class="admin-action-button" onclick="showAdminContent('admin-view-users', this)">View Users</button>
 
             </div>
@@ -341,6 +346,45 @@
         <p>No volunteer applications found.</p>
     }
 </div>
+
+            <div id="admin-view-shelters" class="admin-content" style="display:none;">
+                <h3>Shelter List</h3>
+
+                @if (Model.Shelters != null && Model.Shelters.Any())
+                {
+                    <ul class="adoption-list">
+                        @foreach (var shelter in Model.Shelters)
+                        {
+                            <li class="adoption-item">
+                                <div class="pet-info">
+                                    <strong>Name:</strong> @shelter.Name
+                                </div>
+                                <div class="adopter-info">
+                                    <strong>Shelter Id:</strong> @shelter.ShelterId
+                                </div>
+                                <div class="status-info">
+                                    <strong>Location:</strong> @shelter.Location
+                                </div>
+                                <div class="admin-buttons">
+                                    <a class="edit-button" asp-controller="Shelters" asp-action="Edit" asp-route-id="@shelter.ShelterId">Edit</a>
+                                    <form method="post" asp-controller="Shelters" asp-action="Delete" asp-route-id="@shelter.ShelterId"
+                                          onsubmit="return confirm('Are you sure you want to delete this shelter?');"
+                                          style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="delete-button">Delete</button>
+                                    </form>
+                                    <a class="view-button" asp-controller="Shelters" asp-action="Details" asp-route-id="@shelter.ShelterId">View</a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No shelters found.</p>
+                }
+            </div>
+
             <div id="admin-view-users" class="admin-content" style="display:none;">
                 <h3>All Users</h3>
                 @if (Model.Users != null && Model.Users.Any())

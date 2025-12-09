@@ -41,6 +41,7 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
         public InputModel Input { get; set; }
 
         public List<Pet> Pets { get; set; }
+        public List<Shelter> Shelters { get; set; }
         public PersonalityProfile? Personality { get; set; }
         public List<Adoption> UserAdoptionRequests { get; set; }
         public List<Adoption> AllAdoptionRequests { get; set; }
@@ -98,6 +99,7 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
             await LoadUserVolunteerApplications(user);
             await LoadAdminDataIfApplicable(user);
             await LoadPets();
+            await LoadShelters();
             await LoadAsync(user);
 
             return Page();
@@ -150,6 +152,11 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
         private async Task LoadPets()
         {
             Pets = await _furEverTogetherDbContext.Pets.ToListAsync();
+        }
+
+        private async Task LoadShelters()
+        {
+            Shelters = await _furEverTogetherDbContext.Shelters.ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()

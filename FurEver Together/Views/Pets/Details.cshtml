@@ -7,6 +7,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pet Details</title>
     <link rel="stylesheet" href="/css/pets.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #shelterMap {
+            height: 300px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .shelter-location-section
+        {
+            margin: 30px auto; 
+            padding: 20px;
+            background-color: #FBEAEB;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 1200px; 
+            width: calc(100% - 80px); 
+        }
+
+        .shelter-location-section h3 {
+            color: #2F3C7E;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .shelter-info {
+            margin-bottom: 15px;
+        }
+
+        .shelter-info p {
+            margin: 5px 0;
+            font-size: 1rem;
+        }
+
+        .shelter-info .detail-label {
+            font-weight: bold;
+            color: #2F3C7E;
+        }
+    </style>
 </head>
 <body>
     <div class="pet-details-container">
@@ -55,8 +96,7 @@
             {
                     <p class="adopted-label">This pet has already found a lovely family.</p>
                 }
-                </div>
-            }
+            </div>
     </div>
 
         <div class="right-column">
@@ -105,14 +145,48 @@
                 }
             </div>
         </div>
-
     </div>
 
+    @if (Model.Shelter != null)
+    {
+        <div class="shelter-location-section">
+            <h3>Shelter Location</h3>
+            <div class="shelter-info">
+                <p><span class="detail-label">Shelter Name:</span> @Model.Shelter.Name</p>
+                <p><span class="detail-label">Address:</span> @Model.Shelter.Address</p>
+                @if (!string.IsNullOrEmpty(Model.Shelter.PhoneNumber))
+                {
+                    <p><span class="detail-label">Phone:</span> @Model.Shelter.PhoneNumber</p>
+                }
+            </div>
+            <div id="shelterMap"></div>
+        </div>
+    }
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         function handleImageError() {
             var placeholderUrl = "/uploads/Animals/no-image-available-pets.jpg";
             var imageElement = document.getElementById('petImage');
             imageElement.src = placeholderUrl;
+        }
+
+        @if (Model.Shelter != null)
+        {
+            <text>
+            // Initialize the map
+            var map = L.map('shelterMap').setView([@Model.Shelter.Latitude, @Model.Shelter.Longitude], 15);
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Add a marker for the shelter
+            var marker = L.marker([@Model.Shelter.Latitude, @Model.Shelter.Longitude]).addTo(map);
+            marker.bindPopup('<b>@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Shelter.Name))</b><br>@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Shelter.Address))').openPopup();
+            </text>
         }
     </script>
 </body>
