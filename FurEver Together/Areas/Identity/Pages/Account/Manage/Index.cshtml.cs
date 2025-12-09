@@ -49,11 +49,40 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
         public List<Volunteer> AllVolunteerApplications { get; set; }
         public List<User> Users { get; set; }
 
+        // Analytics Properties
+        public PetAdoptionStats MostAdoptedAnimal { get; set; }
+        public List<UserAdoptionStats> UserAdoptionStatistics { get; set; }
+        public List<ShelterCapacityStats> ShelterCapacityStatistics { get; set; }
+        public int TotalVolunteerRequests { get; set; }
+
         public class InputModel
         {
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+        }
+
+        public class PetAdoptionStats
+        {
+            public string PetType { get; set; }
+            public int TotalRequests { get; set; }
+        }
+
+        public class UserAdoptionStats
+        {
+            public string UserId { get; set; }
+            public string UserEmail { get; set; }
+            public int TotalRequests { get; set; }
+            public int ApprovedRequests { get; set; }
+            public double SuccessRate { get; set; }
+        }
+
+        public class ShelterCapacityStats
+        {
+            public string ShelterName { get; set; }
+            public int Capacity { get; set; }
+            public int CurrentOccupancy { get; set; }
+            public double OccupancyPercentage { get; set; }
         }
 
         private async Task LoadAsync(User user)
@@ -97,9 +126,9 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
 
             await LoadUserAdoptionRequests(user);
             await LoadUserVolunteerApplications(user);
-            await LoadAdminDataIfApplicable(user);
             await LoadPets();
             await LoadShelters();
+            await LoadAdminDataIfApplicable(user);
             await LoadAsync(user);
 
             return Page();
@@ -129,6 +158,7 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
             await LoadAllAdoptionRequests();
             await LoadAllVolunteerApplications();
             await LoadAllUsers();
+            await LoadAnalytics();
         }
 
         private async Task LoadAllAdoptionRequests()
@@ -156,7 +186,77 @@ namespace FurEver_Together.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadShelters()
         {
-            Shelters = await _furEverTogetherDbContext.Shelters.ToListAsync();
+            Shelters = await _furEverTogetherDbContext.Shelters
+                .Include(s => s.Pets)
+                .ToListAsync();
+        }
+
+        private async Task LoadAnalytics()
+        {
+            await LoadMostAdoptedAnimal();
+            await LoadUserAdoptionStatistics();
+            LoadShelterCapacityStatistics();
+            LoadVolunteerRequestsCount();
+        }
+
+        private async Task LoadMostAdoptedAnimal()
+        {
+            var adoptionsByPetType = await _furEverTogetherDbContext.Adoptions
+                .Include(a => a.Pet)
+                .Where(a => a.Pet != null)
+                .GroupBy(a => a.Pet.Type)
+                .Select(g => new PetAdoptionStats
+                {
+                    PetType = g.Key.ToString(),
+                    TotalRequests = g.Count()
+                })
+                .OrderByDescending(s => s.TotalRequests)
+                .FirstOrDefaultAsync();
+
+            MostAdoptedAnimal = adoptionsByPetType ?? new PetAdoptionStats { PetType = "N/A", TotalRequests = 0 };
+        }
+
+        private async Task LoadUserAdoptionStatistics()
+        {
+            var userStats = await _furEverTogetherDbContext.Adoptions
+                .Include(a => a.User)
+                .Where(a => a.UserId != null)
+                .GroupBy(a => a.UserId)
+                .Select(g => new
+                {
+                    UserId = g.Key,
+                    UserEmail = g.First().User.Email,
+                    TotalRequests = g.Count(),
+                    ApprovedRequests = g.Count(a => a.Status == ApplicationStatus.Approved)
+                })
+                .ToListAsync();
+
+            UserAdoptionStatistics = userStats.Select(s => new UserAdoptionStats
+            {
+                UserId = s.UserId,
+                UserEmail = s.UserEmail ?? "N/A",
+                TotalRequests = s.TotalRequests,
+                ApprovedRequests = s.ApprovedRequests,
+                SuccessRate = s.TotalRequests > 0 ? (double)s.ApprovedRequests / s.TotalRequests * 100 : 0
+            }).ToList();
+        }
+
+        private void LoadShelterCapacityStatistics()
+        {
+            ShelterCapacityStatistics = Shelters?.Select(s => new ShelterCapacityStats
+            {
+                ShelterName = s.Name,
+                Capacity = s.Capacity,
+                CurrentOccupancy = s.Pets?.Count(p => !p.IsAdopted) ?? 0,
+                OccupancyPercentage = s.Capacity > 0 
+                    ? (double)(s.Pets?.Count(p => !p.IsAdopted) ?? 0) / s.Capacity * 100 
+                    : 0
+            }).ToList() ?? new List<ShelterCapacityStats>();
+        }
+
+        private void LoadVolunteerRequestsCount()
+        {
+            TotalVolunteerRequests = AllVolunteerApplications?.Count ?? 0;
         }
 
         public async Task<IActionResult> OnPostAsync()
